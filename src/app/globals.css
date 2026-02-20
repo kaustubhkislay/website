@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-mono: var(--font-mono);
+
+  /* semantic color tokens — mapped to CSS vars */
+  --color-bg: var(--bg);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-text-ghost: var(--text-ghost);
+  --color-heading: var(--heading);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-border: var(--border);
+  --color-border-accent: var(--border-accent);
+}
+
+/* dark mode — abyss (default) */
+:root {
+  --bg: #020408;
+  --text: #c8dcd8;
+  --text-muted: #8aaba4;
+  --text-faint: #5a7d76;
+  --text-ghost: #3a5550;
+  --heading: #3a5550;
+  --accent: #1a8a74;
+  --accent-hover: #4df0d2;
+  --border: #0c1424;
+  --border-accent: #0e4d42;
+  --glow-opacity: 1;
+  --glow-gradient: radial-gradient(
+    ellipse 60% 40% at 50% 100%,
+    rgba(77, 240, 210, 0.03) 0%,
+    transparent 70%
+  );
+}
+
+/* light mode — shallow waters */
+:root[data-theme="light"] {
+  --bg: #e8f2f0;
+  --text: #0f2b2a;
+  --text-muted: #2a4a47;
+  --text-faint: #4a7872;
+  --text-ghost: #7aada5;
+  --heading: #7aada5;
+  --accent: #0a7a68;
+  --accent-hover: #045847;
+  --border: #c2ddd7;
+  --border-accent: #82c4b5;
+  --glow-opacity: 1;
+  --glow-gradient: radial-gradient(
+    ellipse 70% 45% at 50% 100%,
+    rgba(10, 122, 104, 0.06) 0%,
+    transparent 70%
+  );
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-muted);
+}
+
+/* subtle radial glow — oceanic in both modes */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--glow-gradient);
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--glow-opacity);
+  transition: opacity 0.3s, background 0.3s;
+}

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app:*)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:www.lesswrong.com)",
+      "WebFetch(domain:wonderingaboutai.substack.com)",
+      "WebFetch(domain:substackapi.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:open.spotify.com)",
+      "WebFetch(domain:www.benkuhn.net)"
+    ],
+    "additionalDirectories": [
+      "/Users/kaustubhkislay/website-1/.claude"
+    ]
+  }
+}
