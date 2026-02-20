@@ -102,7 +102,7 @@ export default async function Home() {
               <a href="https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Discovery</a>
             </li>
             <li className="py-1">
-              <a href="https://open.spotify.com/album/5SknXhmjHijD0uU1Pm2HBr?si=56_Cu3AISGKAKWDo9mx1hw" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Thatcher&apos;s Antithesis</a>
+              <a href="https://open.spotify.com/album/5SknXhmjHijD0uU1Pm2HBr?si=56_Cu3AISGKAKWDo9mx1hw" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">London&apos;s Saviour</a>
             </li>
             <li className="py-1">
               <a href="https://open.spotify.com/album/2S8AWAM0nxyFy66YnUfIs3" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Man On The Moon: The End Of Day</a>
