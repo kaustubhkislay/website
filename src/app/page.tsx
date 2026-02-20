@@ -5,21 +5,17 @@ export default async function Home() {
   const reading = await getRecentReading(3);
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
-      <div className="flex justify-between items-baseline mb-10">
+      <div className="flex justify-between items-baseline mb-4">
         <h1 className="text-base font-semibold text-text">Kaustubh Kislay <span className="text-[#8b2232] font-normal">- redteam</span></h1>
         <ThemeToggle />
       </div>
+      <p className="text-[15px] text-text-muted leading-relaxed mb-14">
+        I write on{" "}
+        <a href="https://www.lesswrong.com/users/kaustubh-kislay" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">LessWrong</a>
+        {" "}and{" "}
+        <a href="https://substack.com/@kaustubhais" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">Substack</a>.
+      </p>
       <main className="space-y-14">
-        <section id="writings">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Writings</h2>
-          <p className="text-[15px] text-text-muted leading-relaxed">
-            I write on{" "}
-            <a href="https://www.lesswrong.com/users/kaustubh-kislay" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">LessWrong</a>
-            {" "}and{" "}
-            <a href="https://substack.com/@kaustubhais" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">Substack</a>.
-          </p>
-        </section>
-
         <section id="reading">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Recent Reading</h2>
           {reading.length > 0 ? (
@@ -125,19 +121,17 @@ export default async function Home() {
             <SocialLink label="Curius" href="https://curius.app/kaustubh-kislay" />
             <SocialLink label="Signal" description="Kaustubh.62" />
             <SocialLink label="Book a chat" href="https://calendar.app.google/Zu5o4mviEVapDrZE9" />
+            <li className="flex items-baseline gap-4">
+              <a
+                href="https://forms.gle/QnB7vAfVV3QgAta1A"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[15px] text-accent hover:text-accent-hover transition-colors"
+              >
+                Leave anonymous feedback
+              </a>
+            </li>
           </ul>
-        </section>
-
-        <section id="feedback">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Anonymous Feedback</h2>
-          <a
-            href="https://forms.gle/QnB7vAfVV3QgAta1A"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[15px] text-accent hover:text-accent-hover transition-colors"
-          >
-            Leave anonymous feedback
-          </a>
         </section>
       </main>
 
