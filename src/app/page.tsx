@@ -5,11 +5,8 @@ export default async function Home() {
   const reading = await getRecentReading(3);
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
-      <div className="flex justify-between items-start mb-10">
-        <div>
-          <h1 className="text-base font-semibold text-text">Kaustubh Kislay</h1>
-          <p className="text-sm text-text-ghost">AI Safety, from <a href="https://morecorrect.com" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">morecorrect.com</a></p>
-        </div>
+      <div className="flex justify-between items-baseline mb-10">
+        <h1 className="text-base font-semibold text-text">Kaustubh Kislay <span className="text-[#8b2232] font-normal">- redteam</span></h1>
         <ThemeToggle />
       </div>
       <main className="space-y-14">
