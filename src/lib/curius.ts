@@ -85,7 +85,7 @@ function toReadingItem(item: CuriusLink, userId: number): ReadingItem {
 }
 
 export async function getTodaysReading(): Promise<ReadingItem[]> {
-  const data = await fetchUserLinks();
+  const data = await fetchAllUserLinks();
   if (!data) return [];
 
   const now = new Date();
