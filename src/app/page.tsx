@@ -9,15 +9,18 @@ export default async function Home() {
         <h1 className="text-base font-semibold text-text">Kaustubh Kislay <span className="text-[#8b2232] font-normal">- redteam</span></h1>
         <ThemeToggle />
       </div>
-      <p className="text-[15px] text-text-muted leading-relaxed mb-14">
+      <p className="text-[15px] text-text-muted leading-relaxed">
         I write on{" "}
         <a href="https://www.lesswrong.com/users/kaustubh-kislay" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">LessWrong</a>
         {" "}and{" "}
         <a href="https://substack.com/@kaustubhais" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">Substack</a>.
       </p>
+      <p className="text-[15px] text-text-muted leading-relaxed mb-14">
+        <a href="/reading" className="text-accent hover:text-accent-hover transition-colors">Everything I&apos;ve read</a>.
+      </p>
       <main className="space-y-14">
         <section id="reading">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Recent Reading</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">What I&apos;ve Read Today</h2>
           {reading.length > 0 ? (
             <div className="space-y-5">
               {reading.map((item) => (

@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
     if (latest && latest.id !== lastSeenId) {
       lastSeenId = latest.id;
       revalidatePath("/");
+      revalidatePath("/reading");
       return NextResponse.json({ revalidated: true });
     }
 
