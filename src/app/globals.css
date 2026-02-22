@@ -61,6 +61,12 @@ body {
   color: var(--text-muted);
 }
 
+/* thin scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-accent) transparent;
+}
+
 /* subtle radial glow — oceanic in both modes */
 body::before {
   content: "";

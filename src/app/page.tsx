@@ -20,9 +20,12 @@ export default async function Home() {
       </p>
       <main className="space-y-14">
         <section id="reading">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">What I&apos;ve Read Today</h2>
+          <div className="flex items-baseline justify-between mb-5">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-heading">What I&apos;ve Read Today</h2>
+            <span className="text-xs text-text-ghost">{reading.length}</span>
+          </div>
           {reading.length > 0 ? (
-            <div className="space-y-5">
+            <div className="max-h-60 overflow-y-auto space-y-5 pr-1">
               {reading.map((item) => (
                 <div key={item.url}>
                   <a
