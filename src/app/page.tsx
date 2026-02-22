@@ -141,7 +141,26 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer className="mt-16 pt-6 border-t border-border">
+      <nav className="mt-16 flex justify-between items-center">
+        <span className="text-text-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </span>
+        <a
+          href="https://jeremykintana.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-text-muted hover:text-accent-hover transition-colors"
+        >
+          Jeremy
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </nav>
+
+      <footer className="mt-6">
         <p className="text-sm text-text-ghost">
           &copy; {new Date().getFullYear()} Kaustubh Kislay
         </p>
