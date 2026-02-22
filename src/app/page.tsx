@@ -1,8 +1,8 @@
-import { getRecentReading } from "@/lib/curius";
+import { getTodaysReading } from "@/lib/curius";
 import { ThemeToggle } from "./theme-toggle";
 
 export default async function Home() {
-  const reading = await getRecentReading(3);
+  const reading = await getTodaysReading();
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
       <div className="flex justify-between items-baseline mb-4">

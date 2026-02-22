@@ -57,13 +57,16 @@ function toReadingItem(item: CuriusLink, userId: number): ReadingItem {
   };
 }
 
-export async function getRecentReading(limit = 10): Promise<ReadingItem[]> {
+export async function getTodaysReading(): Promise<ReadingItem[]> {
   const data = await fetchUserLinks();
   if (!data) return [];
 
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
   return data.links
+    .filter((item) => new Date(item.createdDate).getTime() >= startOfDay)
     .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-    .slice(0, limit)
     .map((item) => toReadingItem(item, data.userId));
 }
 
