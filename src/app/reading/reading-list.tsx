@@ -45,8 +45,8 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
           onClick={() => setResearchOnly(true)}
           className={`text-xs px-2.5 py-1 rounded border transition-colors ${
             researchOnly
-              ? "border-border-accent text-text-muted"
-              : "border-border text-text-ghost hover:text-text-muted"
+              ? "border-[#8b2232] text-[#8b2232]"
+              : "border-border text-text-ghost hover:text-[#8b2232]"
           }`}
         >
           research
@@ -61,12 +61,15 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors truncate"
+                  className={`text-[15px] font-medium transition-colors truncate ${
+                    item.tag === "research"
+                      ? "text-[#8b2232] hover:text-[#b22e44]"
+                      : "text-text hover:text-accent-hover"
+                  }`}
                 >
                   {item.title}
                 </a>
                 <span className="text-xs text-text-ghost shrink-0">
-                  {item.tag && <span className="text-border-accent mr-2">{item.tag}</span>}
                   {item.date}
                 </span>
               </div>
