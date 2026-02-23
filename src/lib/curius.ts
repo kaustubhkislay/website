@@ -18,6 +18,15 @@ export interface ReadingItem {
   date: string;
   snippet: string | null;
   highlights: string[];
+  tag: string | null;
+}
+
+function classifyLink(url: string): string | null {
+  try {
+    const hostname = new URL(url).hostname;
+    if (hostname.includes("arxiv.org")) return "research";
+  } catch {}
+  return null;
 }
 
 async function fetchUserId(): Promise<number | null> {
@@ -81,6 +90,7 @@ function toReadingItem(item: CuriusLink, userId: number): ReadingItem {
       .filter((h) => h.userId === userId)
       .map((h) => h.highlight)
       .filter(Boolean),
+    tag: classifyLink(item.link),
   };
 }
 

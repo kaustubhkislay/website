@@ -43,7 +43,10 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
                 >
                   {item.title}
                 </a>
-                <span className="text-xs text-text-ghost shrink-0">{item.date}</span>
+                <span className="text-xs text-text-ghost shrink-0">
+                  {item.tag && <span className="text-border-accent mr-2">{item.tag}</span>}
+                  {item.date}
+                </span>
               </div>
             </div>
           ))}
