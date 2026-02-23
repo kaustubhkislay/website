@@ -5,18 +5,18 @@ import type { ReadingItem } from "@/lib/curius";
 
 export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHref: string }) {
   const [query, setQuery] = useState("");
+  const [researchOnly, setResearchOnly] = useState(false);
 
   const q = query.toLowerCase();
-  const filtered = q
-    ? items.filter(
-        (item) =>
-          item.title.toLowerCase().includes(q)
-      )
-    : items;
+  const filtered = items.filter((item) => {
+    if (researchOnly && item.tag !== "research") return false;
+    if (q && !item.title.toLowerCase().includes(q)) return false;
+    return true;
+  });
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-4">
         <a href={backHref} aria-label="Back" className="text-text-ghost hover:text-text-muted transition-colors shrink-0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
             <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -29,6 +29,28 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
           onChange={(e) => setQuery(e.target.value)}
           className="w-full bg-transparent border border-border rounded px-3 py-2 text-sm text-text placeholder:text-text-ghost focus:outline-none focus:border-border-accent transition-colors"
         />
+      </div>
+      <div className="flex gap-2 mb-8">
+        <button
+          onClick={() => setResearchOnly(false)}
+          className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+            !researchOnly
+              ? "border-border-accent text-text-muted"
+              : "border-border text-text-ghost hover:text-text-muted"
+          }`}
+        >
+          all
+        </button>
+        <button
+          onClick={() => setResearchOnly(true)}
+          className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+            researchOnly
+              ? "border-border-accent text-text-muted"
+              : "border-border text-text-ghost hover:text-text-muted"
+          }`}
+        >
+          research
+        </button>
       </div>
       {filtered.length > 0 ? (
         <div className="space-y-5">
