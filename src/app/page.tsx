@@ -95,6 +95,10 @@ export default async function Home() {
               <a href="https://substack.com/@liviaaaaaa" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Olivia</a>
               <span className="text-sm text-text-ghost">Substack</span>
             </li>
+            <li className="flex justify-between items-baseline gap-4 py-1">
+              <a href="https://wanyuli.com/" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Celeste</a>
+              <span className="text-sm text-text-ghost">Blog</span>
+            </li>
           </ul>
         </section>
 
@@ -142,11 +146,17 @@ export default async function Home() {
       </main>
 
       <nav className="mt-16 flex justify-between items-center">
-        <span className="text-text-ghost">
+        <a
+          href="https://wanyuli.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-text-muted hover:text-accent-hover transition-colors"
+        >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-        </span>
+          Celeste
+        </a>
         <a
           href="https://jeremykintana.com/"
           target="_blank"
