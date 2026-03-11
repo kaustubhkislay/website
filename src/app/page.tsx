@@ -76,6 +76,9 @@ export default async function Home() {
           ) : (
             <p className="text-sm text-text-ghost">Nothing here yet.</p>
           )}
+          <p className="mt-4 text-sm text-text-ghost italic">
+            More to come &mdash; I haven&apos;t been keeping much track but I&apos;ll find these eventually.
+          </p>
         </section>
 
         <section id="writers">

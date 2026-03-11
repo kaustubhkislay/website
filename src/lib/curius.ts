@@ -117,7 +117,7 @@ export async function getAllReading(): Promise<ReadingItem[]> {
 }
 
 export async function getFavoriteReading(): Promise<ReadingItem[]> {
-  const data = await fetchUserLinks();
+  const data = await fetchAllUserLinks();
   if (!data) return [];
 
   return data.links
