@@ -1,8 +1,8 @@
-import { getTodaysReading } from "@/lib/curius";
+import { getTodaysReading, getFavoriteReading } from "@/lib/curius";
 import { ThemeToggle } from "./theme-toggle";
 
 export default async function Home() {
-  const reading = await getTodaysReading();
+  const [reading, favorites] = await Promise.all([getTodaysReading(), getFavoriteReading()]);
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
       <div className="flex justify-between items-baseline mb-4">
@@ -58,22 +58,24 @@ export default async function Home() {
 
         <section id="favorites">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Favorite Reads</h2>
-          <div className="space-y-5">
-            <div>
-              <a
-                href="https://www.benkuhn.net/pjm/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors"
-              >
-                How I&apos;ve run major projects
-              </a>
-              <span className="text-sm text-text-ghost ml-2">&mdash; Ben Kuhn</span>
+          {favorites.length > 0 ? (
+            <div className="space-y-5">
+              {favorites.map((item) => (
+                <div key={item.url}>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors"
+                  >
+                    {item.title}
+                  </a>
+                </div>
+              ))}
             </div>
-          </div>
-          <p className="mt-4 text-sm text-text-ghost italic">
-            More to come &mdash; I haven&apos;t been keeping much track but I&apos;ll find these eventually.
-          </p>
+          ) : (
+            <p className="text-sm text-text-ghost">Nothing here yet.</p>
+          )}
         </section>
 
         <section id="writers">
