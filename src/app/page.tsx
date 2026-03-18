@@ -134,6 +134,7 @@ export default async function Home() {
             <SocialLink label="Substack" href="https://substack.com/@kaustubhais" />
             <SocialLink label="LessWrong" href="https://www.lesswrong.com/users/kaustubh-kislay" />
             <SocialLink label="Curius" href="https://curius.app/kaustubh-kislay" />
+            <SocialLink label="Email" description="kaustubh[dot]kislay[at]gmail[dot]com" />
             <SocialLink label="Signal" description="Kaustubh.62" />
             <SocialLink label="Book a chat" href="https://calendar.app.google/Zu5o4mviEVapDrZE9" />
             <li className="flex items-baseline gap-4">
