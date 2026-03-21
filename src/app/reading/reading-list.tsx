@@ -3,13 +3,22 @@
 import { useState } from "react";
 import type { ReadingItem } from "@/lib/curius";
 
+const TAG_CONFIG: Record<string, { label: string; color: string; hoverColor: string }> = {
+  research:           { label: "research",         color: "#8b2232", hoverColor: "#b22e44" },
+  governance:         { label: "governance",        color: "#1a5276", hoverColor: "#2980b9" },
+  fieldbuilding:      { label: "fieldbuilding",     color: "#7d6608", hoverColor: "#b7950b" },
+  "self-improvement": { label: "self-improvement",  color: "#1a8a74", hoverColor: "#4df0d2" },
+  culture:            { label: "culture",           color: "#6c3483", hoverColor: "#a569bd" },
+  other:              { label: "other",             color: "#5a7d76", hoverColor: "#8aaba4" },
+};
+
 export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHref: string }) {
   const [query, setQuery] = useState("");
-  const [researchOnly, setResearchOnly] = useState(false);
+  const [selectedTag, setSelectedTag] = useState("all");
 
   const q = query.toLowerCase();
   const filtered = items.filter((item) => {
-    if (researchOnly && item.tag !== "research") return false;
+    if (selectedTag !== "all" && item.tag !== selectedTag) return false;
     if (q && !item.title.toLowerCase().includes(q)) return false;
     return true;
   });
@@ -30,51 +39,73 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
           className="w-full bg-transparent border border-border rounded px-3 py-2 text-sm text-text placeholder:text-text-ghost focus:outline-none focus:border-border-accent transition-colors"
         />
       </div>
-      <div className="flex gap-2 mb-8">
+      <div className="flex gap-2 mb-8 flex-wrap">
         <button
-          onClick={() => setResearchOnly(false)}
+          onClick={() => setSelectedTag("all")}
           className={`text-xs px-2.5 py-1 rounded border transition-colors ${
-            !researchOnly
+            selectedTag === "all"
               ? "border-border-accent text-text-muted"
               : "border-border text-text-ghost hover:text-text-muted"
           }`}
         >
           all
         </button>
-        <button
-          onClick={() => setResearchOnly(true)}
-          className={`text-xs px-2.5 py-1 rounded border transition-colors ${
-            researchOnly
-              ? "border-[#8b2232] text-[#8b2232]"
-              : "border-border text-text-ghost hover:text-[#8b2232]"
-          }`}
-        >
-          research
-        </button>
+        {Object.entries(TAG_CONFIG).map(([tag, config]) => (
+          <button
+            key={tag}
+            onClick={() => setSelectedTag(tag)}
+            className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+              selectedTag !== tag ? "border-border text-text-ghost" : ""
+            }`}
+            style={
+              selectedTag === tag
+                ? { borderColor: config.color, color: config.color }
+                : undefined
+            }
+            onMouseEnter={(e) => {
+              if (selectedTag !== tag) {
+                (e.target as HTMLButtonElement).style.color = config.color;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedTag !== tag) {
+                (e.target as HTMLButtonElement).style.color = "";
+              }
+            }}
+          >
+            {config.label}
+          </button>
+        ))}
       </div>
       {filtered.length > 0 ? (
         <div className="space-y-5">
-          {filtered.map((item) => (
-            <div key={item.url}>
-              <div className="flex items-baseline justify-between gap-4">
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-[15px] font-medium transition-colors truncate ${
-                    item.tag === "research"
-                      ? "text-[#8b2232] hover:text-[#b22e44]"
-                      : "text-text hover:text-accent-hover"
-                  }`}
-                >
-                  {item.title}
-                </a>
-                <span className="text-xs text-text-ghost shrink-0">
-                  {item.date}
-                </span>
+          {filtered.map((item) => {
+            const tagStyle = item.tag ? TAG_CONFIG[item.tag] : null;
+            return (
+              <div key={item.url}>
+                <div className="flex items-baseline justify-between gap-4">
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
+                    style={tagStyle ? { color: tagStyle.color } : undefined}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLAnchorElement).style.color = tagStyle ? tagStyle.hoverColor : "";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLAnchorElement).style.color = tagStyle ? tagStyle.color : "";
+                    }}
+                  >
+                    {item.title}
+                  </a>
+                  <span className="text-xs text-text-ghost shrink-0">
+                    {item.date}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <p className="text-sm text-text-ghost">

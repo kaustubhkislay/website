@@ -1,3 +1,5 @@
+import { classifyLinks, type LinkTag } from "./classify";
+
 const CURIUS_USERNAME = "kaustubh-kislay";
 
 interface CuriusLink {
@@ -18,15 +20,7 @@ export interface ReadingItem {
   date: string;
   snippet: string | null;
   highlights: string[];
-  tag: string | null;
-}
-
-function classifyLink(url: string): string | null {
-  try {
-    const hostname = new URL(url).hostname;
-    if (hostname.includes("arxiv.org")) return "research";
-  } catch {}
-  return null;
+  tag: LinkTag | null;
 }
 
 async function fetchUserId(): Promise<number | null> {
@@ -77,7 +71,7 @@ async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: numbe
   return { links: all, userId };
 }
 
-function toReadingItem(item: CuriusLink, userId: number): ReadingItem {
+function toReadingItem(item: CuriusLink, userId: number, tag: LinkTag | null): ReadingItem {
   return {
     title: item.title,
     url: item.link,
@@ -90,7 +84,7 @@ function toReadingItem(item: CuriusLink, userId: number): ReadingItem {
       .filter((h) => h.userId === userId)
       .map((h) => h.highlight)
       .filter(Boolean),
-    tag: classifyLink(item.link),
+    tag,
   };
 }
 
@@ -101,27 +95,42 @@ export async function getTodaysReading(): Promise<ReadingItem[]> {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-  return data.links
+  const todayLinks = data.links
     .filter((item) => new Date(item.createdDate).getTime() >= startOfDay)
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-    .map((item) => toReadingItem(item, data.userId));
+    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+
+  const tagMap = await classifyLinks(
+    todayLinks.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
+  );
+
+  return todayLinks.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
 }
 
 export async function getAllReading(): Promise<ReadingItem[]> {
   const data = await fetchAllUserLinks();
   if (!data) return [];
 
-  return data.links
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-    .map((item) => toReadingItem(item, data.userId));
+  const sorted = data.links
+    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+
+  const tagMap = await classifyLinks(
+    sorted.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
+  );
+
+  return sorted.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
 }
 
 export async function getFavoriteReading(): Promise<ReadingItem[]> {
   const data = await fetchAllUserLinks();
   if (!data) return [];
 
-  return data.links
+  const favorites = data.links
     .filter((item) => item.favorite)
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-    .map((item) => toReadingItem(item, data.userId));
+    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
+
+  const tagMap = await classifyLinks(
+    favorites.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
+  );
+
+  return favorites.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
 }

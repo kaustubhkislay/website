@@ -12,7 +12,10 @@
       "Bash(python3:*)",
       "WebFetch(domain:open.spotify.com)",
       "WebFetch(domain:www.benkuhn.net)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:curius.app)",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:openrouter.ai)"
     ],
     "additionalDirectories": [
       "/Users/kaustubhkislay/website-1/.claude"
