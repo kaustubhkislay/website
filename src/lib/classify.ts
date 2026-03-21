@@ -2,16 +2,14 @@ import { Redis } from "@upstash/redis";
 
 export type LinkTag =
   | "research"
-  | "governance"
-  | "fieldbuilding"
+  | "policy/fieldbuilding"
   | "self-improvement"
   | "culture"
   | "other";
 
 const VALID_TAGS = new Set<LinkTag>([
   "research",
-  "governance",
-  "fieldbuilding",
+  "policy/fieldbuilding",
   "self-improvement",
   "culture",
   "other",
@@ -121,8 +119,7 @@ export async function classifyLinks(
 
 Categories:
 - research: technical AI papers, interpretability, alignment theory, AI safety research, arxiv papers
-- governance: AI policy, regulation, safety evals, institutional responses to AI
-- fieldbuilding: EA, community organizing, career strategy in AI safety, movement building
+- policy/fieldbuilding: AI policy, regulation, safety evals, institutional responses to AI, EA, community organizing, career strategy in AI safety, movement building
 - self-improvement: productivity, social skills, personal effectiveness, career advice
 - culture: essays, philosophy, general nonfiction, music, art, parties
 - other: anything that doesn't clearly fit the above categories
