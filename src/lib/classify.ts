@@ -17,6 +17,17 @@ const VALID_TAGS = new Set<LinkTag>([
   "other",
 ]);
 
+async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (i === attempts - 1) throw err;
+    }
+  }
+  throw new Error("retry exhausted");
+}
+
 function getRedis(): Redis | null {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
@@ -26,39 +37,41 @@ function getRedis(): Redis | null {
 
 async function scrapeMetaDescription(url: string): Promise<string | null> {
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    return await retry(async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
 
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; LinkClassifier/1.0)" },
-      redirect: "follow",
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; LinkClassifier/1.0)" },
+        redirect: "follow",
+      });
+      clearTimeout(timeout);
+
+      if (!res.ok || !res.headers.get("content-type")?.includes("text/html")) {
+        return null;
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) return null;
+
+      let html = "";
+      const decoder = new TextDecoder();
+      while (html.length < 10000) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        html += decoder.decode(value, { stream: true });
+      }
+      reader.cancel();
+
+      const metaRegex =
+        /<meta\s+(?:[^>]*?)(?:name|property)\s*=\s*["'](?:description|og:description)["'][^>]*?content\s*=\s*["']([^"']*?)["'][^>]*?\/?>/gi;
+      const contentFirstRegex =
+        /<meta\s+(?:[^>]*?)content\s*=\s*["']([^"']*?)["'][^>]*?(?:name|property)\s*=\s*["'](?:description|og:description)["'][^>]*?\/?>/gi;
+
+      const match = metaRegex.exec(html) || contentFirstRegex.exec(html);
+      return match?.[1]?.trim() || null;
     });
-    clearTimeout(timeout);
-
-    if (!res.ok || !res.headers.get("content-type")?.includes("text/html")) {
-      return null;
-    }
-
-    const reader = res.body?.getReader();
-    if (!reader) return null;
-
-    let html = "";
-    const decoder = new TextDecoder();
-    while (html.length < 10000) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      html += decoder.decode(value, { stream: true });
-    }
-    reader.cancel();
-
-    const metaRegex =
-      /<meta\s+(?:[^>]*?)(?:name|property)\s*=\s*["'](?:description|og:description)["'][^>]*?content\s*=\s*["']([^"']*?)["'][^>]*?\/?>/gi;
-    const contentFirstRegex =
-      /<meta\s+(?:[^>]*?)content\s*=\s*["']([^"']*?)["'][^>]*?(?:name|property)\s*=\s*["'](?:description|og:description)["'][^>]*?\/?>/gi;
-
-    const match = metaRegex.exec(html) || contentFirstRegex.exec(html);
-    return match?.[1]?.trim() || null;
   } catch {
     return null;
   }
@@ -119,26 +132,30 @@ ${linkDescriptions.join("\n")}
 
 Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: [{"url":"https://example.com","tag":"research"}]`;
 
-    const res = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash-lite",
-          messages: [{ role: "user", content: prompt }],
-          response_format: { type: "json_object" },
-        }),
-      }
-    );
+    const text = await retry(async () => {
+      const res = await fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-lite",
+            messages: [{ role: "user", content: prompt }],
+            response_format: { type: "json_object" },
+          }),
+        }
+      );
 
-    if (!res.ok) return result;
+      if (!res.ok) throw new Error(`OpenRouter ${res.status}`);
 
-    const data = await res.json();
-    const text = data?.choices?.[0]?.message?.content;
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) throw new Error("Empty response");
+      return content;
+    });
     if (!text) return result;
 
     const raw = JSON.parse(text);
