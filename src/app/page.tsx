@@ -146,12 +146,12 @@ export default async function Home() {
           Celeste
         </a>
         <a
-          href="https://jeremykintana.com/"
+          href="https://www.wlanderson.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-text-muted hover:text-accent-hover transition-colors"
         >
-          Jeremy
+          Will
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
