@@ -88,19 +88,14 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
-                    style={tagStyle ? { color: tagStyle.color } : undefined}
-                    onMouseEnter={(e) => {
-                      (e.target as HTMLAnchorElement).style.color = tagStyle ? tagStyle.hoverColor : "";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.target as HTMLAnchorElement).style.color = tagStyle ? tagStyle.color : "";
-                    }}
                   >
                     {item.title}
                   </a>
-                  <span className="text-xs text-text-ghost shrink-0">
-                    {item.date}
-                  </span>
+                  {tagStyle && (
+                    <span className="text-xs shrink-0" style={{ color: tagStyle.color }}>
+                      {tagStyle.label}
+                    </span>
+                  )}
                 </div>
               </div>
             );
