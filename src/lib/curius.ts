@@ -103,7 +103,7 @@ export async function getTodaysReading(): Promise<ReadingItem[]> {
     todayLinks.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
   );
 
-  return todayLinks.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
+  return todayLinks.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
 }
 
 export async function getAllReading(): Promise<ReadingItem[]> {
@@ -117,7 +117,7 @@ export async function getAllReading(): Promise<ReadingItem[]> {
     sorted.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
   );
 
-  return sorted.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
+  return sorted.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
 }
 
 export async function getFavoriteReading(): Promise<ReadingItem[]> {
@@ -132,5 +132,5 @@ export async function getFavoriteReading(): Promise<ReadingItem[]> {
     favorites.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
   );
 
-  return favorites.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? null));
+  return favorites.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
 }
