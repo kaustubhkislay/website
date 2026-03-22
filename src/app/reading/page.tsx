@@ -1,6 +1,8 @@
 import { getAllReading } from "@/lib/curius";
 import { ReadingList } from "./reading-list";
 
+export const revalidate = 3600;
+
 export const metadata = {
   title: "Reading — Kaustubh Kislay",
 };
