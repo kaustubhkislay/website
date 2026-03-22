@@ -92,7 +92,10 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
                     {item.title}
                   </a>
                   {tagStyle && (
-                    <span className="text-xs shrink-0" style={{ color: tagStyle.color }}>
+                    <span
+                      className="text-xs shrink-0 px-1.5 py-0.5 rounded border"
+                      style={{ color: tagStyle.color, borderColor: tagStyle.color }}
+                    >
                       {tagStyle.short}
                     </span>
                   )}
