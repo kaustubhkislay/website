@@ -107,24 +107,6 @@ export default async function Home() {
           </ul>
         </section>
 
-        <section id="music">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Music I Enjoy</h2>
-          <ul className="space-y-1">
-            <li className="py-1">
-              <a href="https://open.spotify.com/album/4jI9SU1GmpIVhHMuYZuvX7" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">The Fall-Off</a>
-            </li>
-            <li className="py-1">
-              <a href="https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Discovery</a>
-            </li>
-            <li className="py-1">
-              <a href="https://open.spotify.com/album/5SknXhmjHijD0uU1Pm2HBr?si=56_Cu3AISGKAKWDo9mx1hw" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">London&apos;s Saviour</a>
-            </li>
-            <li className="py-1">
-              <a href="https://open.spotify.com/album/2S8AWAM0nxyFy66YnUfIs3" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Man On The Moon: The End Of Day</a>
-            </li>
-          </ul>
-        </section>
-
         <section id="find-me">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Where to Find Me</h2>
           <ul className="space-y-3">
