@@ -81,18 +81,18 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
           {filtered.map((item) => {
             const tagStyle = item.tag ? TAG_CONFIG[item.tag] : null;
             return (
-              <div key={item.url} className="relative">
+              <div key={item.url} className="relative flex items-baseline gap-2">
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[15px] font-medium transition-colors truncate block text-text hover:text-accent-hover"
+                  className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
                 >
                   {item.title}
                 </a>
                 {tagStyle && (
                   <span
-                    className="absolute top-0.5 -right-10 text-xs px-1.5 py-0.5 rounded border"
+                    className="shrink-0 text-xs px-1.5 py-0.5 rounded border md:absolute md:top-0.5 md:-right-10"
                     style={{ color: tagStyle.color, borderColor: tagStyle.color }}
                   >
                     {tagStyle.short}
