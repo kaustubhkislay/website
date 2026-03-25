@@ -6,9 +6,9 @@ import type { ReadingItem } from "@/lib/curius";
 const TAG_CONFIG: Record<string, { label: string; short: string; color: string; hoverColor: string }> = {
   research:               { label: "research",            short: "r",   color: "#8b2232", hoverColor: "#b22e44" },
   "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "#1a5276", hoverColor: "#2980b9" },
-  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "#4a9a3a", hoverColor: "#6edb4a" },
+  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "#1a8a74", hoverColor: "#4df0d2" },
   culture:                { label: "culture",              short: "c",   color: "#6c3483", hoverColor: "#a569bd" },
-  other:                  { label: "other",                short: "o",   color: "#5a7a52", hoverColor: "#8aaa7e" },
+  other:                  { label: "other",                short: "o",   color: "#5a7d76", hoverColor: "#8aaba4" },
 };
 
 export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHref: string }) {
