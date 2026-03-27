@@ -4,11 +4,11 @@ import { useState } from "react";
 import type { ReadingItem } from "@/lib/curius";
 
 const TAG_CONFIG: Record<string, { label: string; short: string; color: string; hoverColor: string }> = {
-  research:               { label: "research",            short: "r",   color: "#3a7cc0", hoverColor: "#1a5090" },
-  "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "#5a6ea0", hoverColor: "#3a4e80" },
-  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "#6a8ab0", hoverColor: "#4a6a90" },
-  culture:                { label: "culture",              short: "c",   color: "#8a6a98", hoverColor: "#6a4a78" },
-  other:                  { label: "other",                short: "o",   color: "#7a8a9e", hoverColor: "#4a5568" },
+  research:               { label: "research",            short: "r",   color: "#c0392b", hoverColor: "#962d22" },
+  "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "#27ae60", hoverColor: "#1e8449" },
+  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "#2980b9", hoverColor: "#1f6694" },
+  culture:                { label: "culture",              short: "c",   color: "#d4a017", hoverColor: "#a67c12" },
+  other:                  { label: "other",                short: "o",   color: "#7f8c8d", hoverColor: "#5a6566" },
 };
 
 export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHref: string }) {
