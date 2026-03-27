@@ -6,7 +6,7 @@ export default async function Home() {
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
       <div className="flex justify-between items-baseline mb-4">
-        <h1 className="text-base font-semibold text-text">Kaustubh Kislay <span className="text-[#8b2232] font-normal">- redteam</span></h1>
+        <h1 className="text-base font-semibold text-text">Kaustubh Kislay</h1>
         <ThemeToggle />
       </div>
       <p className="text-[15px] text-text-muted leading-relaxed">
