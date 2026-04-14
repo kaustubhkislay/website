@@ -94,7 +94,7 @@ export default async function Home() {
               <span className="text-sm text-text-ghost">Substack</span>
             </li>
             <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://substack.com/@liviaaaaaa" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Olivia</a>
+              <a href="https://substack.com/@iviiiiiii" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Olivia</a>
               <span className="text-sm text-text-ghost">Substack</span>
             </li>
             <li className="flex justify-between items-baseline gap-4 py-1">
