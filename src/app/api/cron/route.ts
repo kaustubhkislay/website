@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { classifyLinks } from "@/lib/classify";
 
 const CURIUS_USERNAME = "kaustubh-kislay";
 let lastSeenId: number | null = null;
@@ -34,6 +35,11 @@ export async function GET(req: NextRequest) {
 
     if (latest && latest.id !== lastSeenId) {
       lastSeenId = latest.id;
+      // Warm the classification cache for recent links so render path stays cache-only.
+      const recent = (userSaved as Array<{ link: string; title: string; snippet: string | null }>)
+        .slice(0, 30)
+        .map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
+      await classifyLinks(recent).catch(() => {});
       revalidatePath("/");
       revalidatePath("/reading");
       return NextResponse.json({ revalidated: true });

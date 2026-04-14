@@ -75,6 +75,28 @@ async function scrapeMetaDescription(url: string): Promise<string | null> {
   }
 }
 
+export async function getCachedTags(
+  links: Array<{ url: string }>
+): Promise<Map<string, LinkTag>> {
+  const result = new Map<string, LinkTag>();
+  if (links.length === 0) return result;
+  const redis = getRedis();
+  if (!redis) return result;
+  try {
+    const keys = links.map((l) => `tag:${l.url}`);
+    const cached = await redis.mget<(string | null)[]>(...keys);
+    for (let i = 0; i < links.length; i++) {
+      const tag = cached[i];
+      if (tag && VALID_TAGS.has(tag as LinkTag)) {
+        result.set(links[i].url, tag as LinkTag);
+      }
+    }
+  } catch {
+    // Redis unavailable
+  }
+  return result;
+}
+
 export async function classifyLinks(
   links: Array<{ url: string; title: string; snippet: string | null }>
 ): Promise<Map<string, LinkTag>> {
@@ -82,23 +104,7 @@ export async function classifyLinks(
   if (!apiKey || links.length === 0) return new Map();
 
   const redis = getRedis();
-  const result = new Map<string, LinkTag>();
-
-  // Check Redis for existing classifications
-  if (redis) {
-    try {
-      const keys = links.map((l) => `tag:${l.url}`);
-      const cached = await redis.mget<(string | null)[]>(...keys);
-      for (let i = 0; i < links.length; i++) {
-        const tag = cached[i];
-        if (tag && VALID_TAGS.has(tag as LinkTag)) {
-          result.set(links[i].url, tag as LinkTag);
-        }
-      }
-    } catch {
-      // Redis unavailable, continue without cache
-    }
-  }
+  const result = await getCachedTags(links);
 
   const uncached = links.filter((l) => !result.has(l.url));
   if (uncached.length === 0) return result;

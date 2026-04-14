@@ -1,6 +1,7 @@
-import { classifyLinks, type LinkTag } from "./classify";
+import { getCachedTags, type LinkTag } from "./classify";
 
 const CURIUS_USERNAME = "kaustubh-kislay";
+const PAGE_BATCH = 4;
 
 interface CuriusLink {
   id: number;
@@ -26,25 +27,21 @@ export interface ReadingItem {
 async function fetchUserId(): Promise<number | null> {
   const userRes = await fetch(
     `https://curius.app/api/users/${CURIUS_USERNAME}`,
-    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 3600 } }
+    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 86400 } }
   );
   if (!userRes.ok) return null;
   const { user } = await userRes.json();
   return user.id;
 }
 
-async function fetchUserLinks(): Promise<{ links: CuriusLink[]; userId: number } | null> {
-  const userId = await fetchUserId();
-  if (!userId) return null;
-
-  const linksRes = await fetch(
-    `https://curius.app/api/users/${userId}/links?page=0`,
+async function fetchPage(userId: number, page: number): Promise<CuriusLink[] | null> {
+  const res = await fetch(
+    `https://curius.app/api/users/${userId}/links?page=${page}`,
     { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 3600 } }
   );
-  if (!linksRes.ok) return null;
-
-  const { userSaved } = await linksRes.json();
-  return { links: userSaved as CuriusLink[], userId };
+  if (!res.ok) return null;
+  const { userSaved } = await res.json();
+  return (userSaved as CuriusLink[]) ?? [];
 }
 
 async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: number } | null> {
@@ -52,20 +49,18 @@ async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: numbe
   if (!userId) return null;
 
   const all: CuriusLink[] = [];
-  let page = 0;
-
+  let startPage = 0;
+  // Fetch pages in parallel batches; stop when a batch returns any empty page.
   while (true) {
-    const res = await fetch(
-      `https://curius.app/api/users/${userId}/links?page=${page}`,
-      { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 3600 } }
-    );
-    if (!res.ok) break;
-
-    const { userSaved } = await res.json();
-    if (!userSaved || userSaved.length === 0) break;
-
-    all.push(...(userSaved as CuriusLink[]));
-    page++;
+    const pages = Array.from({ length: PAGE_BATCH }, (_, i) => startPage + i);
+    const results = await Promise.all(pages.map((p) => fetchPage(userId, p)));
+    let done = false;
+    for (const r of results) {
+      if (!r || r.length === 0) { done = true; continue; }
+      all.push(...r);
+    }
+    if (done) break;
+    startPage += PAGE_BATCH;
   }
 
   return { links: all, userId };
@@ -88,49 +83,42 @@ function toReadingItem(item: CuriusLink, userId: number, tag: LinkTag | null): R
   };
 }
 
-export async function getTodaysReading(): Promise<ReadingItem[]> {
+async function applyTags(
+  links: CuriusLink[],
+  userId: number
+): Promise<ReadingItem[]> {
+  const tagMap = await getCachedTags(links.map((l) => ({ url: l.link })));
+  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? null));
+}
+
+export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorites: ReadingItem[] }> {
   const data = await fetchAllUserLinks();
-  if (!data) return [];
+  if (!data) return { today: [], favorites: [] };
 
-  const now = new Date();
-  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const startMs = startOfDay.getTime();
 
-  const todayLinks = data.links
-    .filter((item) => new Date(item.createdDate).getTime() >= startOfDay)
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
-
-  const tagMap = await classifyLinks(
-    todayLinks.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
+  const byDate = [...data.links].sort(
+    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
   );
 
-  return todayLinks.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
+  const todayLinks = byDate.filter((i) => new Date(i.createdDate).getTime() >= startMs);
+  const favoriteLinks = byDate.filter((i) => i.favorite);
+
+  const [today, favorites] = await Promise.all([
+    applyTags(todayLinks, data.userId),
+    applyTags(favoriteLinks, data.userId),
+  ]);
+
+  return { today, favorites };
 }
 
 export async function getAllReading(): Promise<ReadingItem[]> {
   const data = await fetchAllUserLinks();
   if (!data) return [];
-
-  const sorted = data.links
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
-
-  const tagMap = await classifyLinks(
-    sorted.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
+  const sorted = [...data.links].sort(
+    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
   );
-
-  return sorted.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
-}
-
-export async function getFavoriteReading(): Promise<ReadingItem[]> {
-  const data = await fetchAllUserLinks();
-  if (!data) return [];
-
-  const favorites = data.links
-    .filter((item) => item.favorite)
-    .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime());
-
-  const tagMap = await classifyLinks(
-    favorites.map((item) => ({ url: item.link, title: item.title, snippet: item.snippet }))
-  );
-
-  return favorites.map((item) => toReadingItem(item, data.userId, tagMap.get(item.link) ?? "other"));
+  return applyTags(sorted, data.userId);
 }
