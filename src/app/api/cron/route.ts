@@ -1,8 +1,10 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import { classifyLinks } from "@/lib/classify";
+import { classifyLinks, getCachedTags } from "@/lib/classify";
+import { getAllLinksForClassification } from "@/lib/curius";
 
 const CURIUS_USERNAME = "kaustubh-kislay";
+const BATCH_SIZE = 25;
 let lastSeenId: number | null = null;
 
 export async function GET(req: NextRequest) {
@@ -33,19 +35,32 @@ export async function GET(req: NextRequest) {
           new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
       )[0];
 
-    if (latest && latest.id !== lastSeenId) {
-      lastSeenId = latest.id;
-      // Warm the classification cache for recent links so render path stays cache-only.
-      const recent = (userSaved as Array<{ link: string; title: string; snippet: string | null }>)
-        .slice(0, 30)
-        .map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
-      await classifyLinks(recent).catch(() => {});
-      revalidatePath("/");
-      revalidatePath("/reading");
-      return NextResponse.json({ revalidated: true });
+    // Backfill classification for ALL uncached links, regardless of lastSeenId.
+    // Redis is authoritative; module-scoped lastSeenId is volatile on serverless.
+    const all = await getAllLinksForClassification();
+    let classified = 0;
+    if (all.length > 0) {
+      const cached = await getCachedTags(all.map((l) => ({ url: l.url })));
+      const uncached = all.filter((l) => !cached.has(l.url));
+      for (let i = 0; i < uncached.length; i += BATCH_SIZE) {
+        const batch = uncached.slice(i, i + BATCH_SIZE);
+        const result = await classifyLinks(batch).catch(() => new Map());
+        classified += result.size;
+      }
     }
 
-    return NextResponse.json({ revalidated: false });
+    const newContent = latest && latest.id !== lastSeenId;
+    if (newContent) {
+      lastSeenId = latest.id;
+      revalidatePath("/");
+      revalidatePath("/reading");
+    } else if (classified > 0) {
+      // Tags changed even without new links — refresh rendered pages.
+      revalidatePath("/");
+      revalidatePath("/reading");
+    }
+
+    return NextResponse.json({ revalidated: newContent || classified > 0, classified });
   } catch {
     return NextResponse.json({ error: "check failed" }, { status: 500 });
   }

@@ -44,7 +44,7 @@ async function fetchPage(userId: number, page: number): Promise<CuriusLink[] | n
   return (userSaved as CuriusLink[]) ?? [];
 }
 
-async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: number } | null> {
+export async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: number } | null> {
   const userId = await fetchUserId();
   if (!userId) return null;
 
@@ -88,7 +88,7 @@ async function applyTags(
   userId: number
 ): Promise<ReadingItem[]> {
   const tagMap = await getCachedTags(links.map((l) => ({ url: l.link })));
-  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? null));
+  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? "other"));
 }
 
 export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorites: ReadingItem[] }> {
@@ -112,6 +112,14 @@ export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorite
   ]);
 
   return { today, favorites };
+}
+
+export async function getAllLinksForClassification(): Promise<
+  Array<{ url: string; title: string; snippet: string | null }>
+> {
+  const data = await fetchAllUserLinks();
+  if (!data) return [];
+  return data.links.map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
 }
 
 export async function getAllReading(): Promise<ReadingItem[]> {
