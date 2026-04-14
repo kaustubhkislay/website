@@ -13,12 +13,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const env = {
+    openrouter: Boolean(process.env.OPENROUTER_API_KEY),
+    kvUrl: Boolean(process.env.KV_REST_API_URL),
+    kvToken: Boolean(process.env.KV_REST_API_TOKEN),
+  };
+
   try {
     const userRes = await fetch(`https://curius.app/api/users/${CURIUS_USERNAME}`, {
       headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` },
       cache: "no-store",
     });
-    if (!userRes.ok) return NextResponse.json({ skipped: true });
+    if (!userRes.ok) return NextResponse.json({ skipped: true, env, stage: "userRes" });
 
     const { user } = await userRes.json();
 
@@ -26,7 +32,7 @@ export async function GET(req: NextRequest) {
       headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` },
       cache: "no-store",
     });
-    if (!linksRes.ok) return NextResponse.json({ skipped: true });
+    if (!linksRes.ok) return NextResponse.json({ skipped: true, env, stage: "linksRes" });
 
     const { userSaved } = await linksRes.json();
     const latest = userSaved
@@ -39,13 +45,20 @@ export async function GET(req: NextRequest) {
     // Redis is authoritative; module-scoped lastSeenId is volatile on serverless.
     const all = await getAllLinksForClassification();
     let classified = 0;
+    let uncachedCount = 0;
+    const errors: string[] = [];
     if (all.length > 0) {
       const cached = await getCachedTags(all.map((l) => ({ url: l.url })));
       const uncached = all.filter((l) => !cached.has(l.url));
+      uncachedCount = uncached.length;
       for (let i = 0; i < uncached.length; i += BATCH_SIZE) {
         const batch = uncached.slice(i, i + BATCH_SIZE);
-        const result = await classifyLinks(batch).catch(() => new Map());
-        classified += result.size;
+        try {
+          const result = await classifyLinks(batch);
+          classified += result.size;
+        } catch (e) {
+          errors.push(e instanceof Error ? e.message : String(e));
+        }
       }
     }
 
@@ -60,8 +73,18 @@ export async function GET(req: NextRequest) {
       revalidatePath("/reading");
     }
 
-    return NextResponse.json({ revalidated: newContent || classified > 0, classified });
-  } catch {
-    return NextResponse.json({ error: "check failed" }, { status: 500 });
+    return NextResponse.json({
+      revalidated: newContent || classified > 0,
+      totalLinks: all.length,
+      uncached: uncachedCount,
+      classified,
+      errors,
+      env,
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { error: "check failed", message: e instanceof Error ? e.message : String(e), env },
+      { status: 500 }
+    );
   }
 }

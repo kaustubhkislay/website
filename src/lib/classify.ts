@@ -101,9 +101,14 @@ export async function classifyLinks(
   links: Array<{ url: string; title: string; snippet: string | null }>
 ): Promise<Map<string, LinkTag>> {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey || links.length === 0) return new Map();
+  if (!apiKey) {
+    console.error("[classify] OPENROUTER_API_KEY is not set");
+    return new Map();
+  }
+  if (links.length === 0) return new Map();
 
   const redis = getRedis();
+  if (!redis) console.warn("[classify] Redis not configured — classifications will not persist");
   const result = await getCachedTags(links);
 
   const uncached = links.filter((l) => !result.has(l.url));
@@ -161,10 +166,26 @@ Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: 
     });
     if (!text) return result;
 
-    const raw = JSON.parse(text);
-    const parsed: Array<{ url: string; tag: string }> = Array.isArray(raw)
-      ? raw
-      : raw.links || raw.results || Object.values(raw)[0] || [];
+    let raw: unknown;
+    try {
+      raw = JSON.parse(text);
+    } catch (e) {
+      console.error("[classify] JSON parse failed:", e, "text:", text.slice(0, 300));
+      return result;
+    }
+
+    // Gemini with json_object mode returns an object. Find the array inside.
+    let parsed: Array<{ url: string; tag: string }> = [];
+    if (Array.isArray(raw)) {
+      parsed = raw as Array<{ url: string; tag: string }>;
+    } else if (raw && typeof raw === "object") {
+      const obj = raw as Record<string, unknown>;
+      const arr = Object.values(obj).find((v) => Array.isArray(v));
+      if (arr) parsed = arr as Array<{ url: string; tag: string }>;
+    }
+    if (parsed.length === 0) {
+      console.error("[classify] could not find array in LLM response:", JSON.stringify(raw).slice(0, 300));
+    }
 
     // Store new classifications in Redis
     const pipeline = redis?.pipeline();
@@ -183,7 +204,8 @@ Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: 
     }
 
     return result;
-  } catch {
+  } catch (err) {
+    console.error("[classify] classification failed:", err);
     return result;
   }
 }
