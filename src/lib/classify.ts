@@ -27,8 +27,8 @@ async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
 }
 
 function getRedis(): Redis | null {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
+  const url = process.env.KV_REST_API_URL || process.env.redis1_KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN || process.env.redis1_KV_REST_API_TOKEN;
   if (!url || !token) return null;
   return new Redis({ url, token });
 }

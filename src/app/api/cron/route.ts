@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
 
   const env = {
     openrouter: Boolean(process.env.OPENROUTER_API_KEY),
-    kvUrl: Boolean(process.env.KV_REST_API_URL),
-    kvToken: Boolean(process.env.KV_REST_API_TOKEN),
+    kvUrl: Boolean(process.env.KV_REST_API_URL || process.env.redis1_KV_REST_API_URL),
+    kvToken: Boolean(process.env.KV_REST_API_TOKEN || process.env.redis1_KV_REST_API_TOKEN),
   };
 
   try {
