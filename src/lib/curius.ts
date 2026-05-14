@@ -24,28 +24,36 @@ export interface ReadingItem {
   tag: LinkTag | null;
 }
 
-async function fetchUserId(): Promise<number | null> {
+type FetchOpts = { fresh?: boolean };
+
+function cacheOpt(fresh: boolean | undefined, revalidate: number): RequestInit {
+  return fresh
+    ? { cache: "no-store" }
+    : { next: { revalidate } };
+}
+
+async function fetchUserId(opts: FetchOpts = {}): Promise<number | null> {
   const userRes = await fetch(
     `https://curius.app/api/users/${CURIUS_USERNAME}`,
-    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 86400 } }
+    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, ...cacheOpt(opts.fresh, 86400) }
   );
   if (!userRes.ok) return null;
   const { user } = await userRes.json();
   return user.id;
 }
 
-async function fetchPage(userId: number, page: number): Promise<CuriusLink[] | null> {
+async function fetchPage(userId: number, page: number, opts: FetchOpts = {}): Promise<CuriusLink[] | null> {
   const res = await fetch(
     `https://curius.app/api/users/${userId}/links?page=${page}`,
-    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, next: { revalidate: 3600 } }
+    { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, ...cacheOpt(opts.fresh, 3600) }
   );
   if (!res.ok) return null;
   const { userSaved } = await res.json();
   return (userSaved as CuriusLink[]) ?? [];
 }
 
-export async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId: number } | null> {
-  const userId = await fetchUserId();
+export async function fetchAllUserLinks(opts: FetchOpts = {}): Promise<{ links: CuriusLink[]; userId: number } | null> {
+  const userId = await fetchUserId(opts);
   if (!userId) return null;
 
   const all: CuriusLink[] = [];
@@ -53,7 +61,7 @@ export async function fetchAllUserLinks(): Promise<{ links: CuriusLink[]; userId
   // Fetch pages in parallel batches; stop when a batch returns any empty page.
   while (true) {
     const pages = Array.from({ length: PAGE_BATCH }, (_, i) => startPage + i);
-    const results = await Promise.all(pages.map((p) => fetchPage(userId, p)));
+    const results = await Promise.all(pages.map((p) => fetchPage(userId, p, opts)));
     let done = false;
     for (const r of results) {
       if (!r || r.length === 0) { done = true; continue; }
@@ -88,12 +96,25 @@ async function applyTags(
   userId: number
 ): Promise<ReadingItem[]> {
   const tagMap = await getCachedTags(links.map((l) => ({ url: l.link })));
-  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? "other"));
+  // Falls back to null (renders as no badge) instead of "other", so unclassified
+  // links don't masquerade as deliberately-classified-other.
+  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? null));
 }
+
+const MANUAL_FAVORITES: ReadingItem[] = [
+  {
+    title: "Strategy as a Wicked Problem (Camillus, 2008)",
+    url: "https://axveco.com/wp-content/uploads/2020/09/Strategy-as-a-Wicked-Problem-Camillus-2008.pdf",
+    date: "Sep 2008",
+    snippet: null,
+    highlights: [],
+    tag: null,
+  },
+];
 
 export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorites: ReadingItem[] }> {
   const data = await fetchAllUserLinks();
-  if (!data) return { today: [], favorites: [] };
+  if (!data) return { today: [], favorites: [...MANUAL_FAVORITES] };
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -111,13 +132,16 @@ export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorite
     applyTags(favoriteLinks, data.userId),
   ]);
 
-  return { today, favorites };
+  const manualUrls = new Set(MANUAL_FAVORITES.map((m) => m.url));
+  const merged = [...MANUAL_FAVORITES, ...favorites.filter((f) => !manualUrls.has(f.url))];
+
+  return { today, favorites: merged };
 }
 
-export async function getAllLinksForClassification(): Promise<
-  Array<{ url: string; title: string; snippet: string | null }>
-> {
-  const data = await fetchAllUserLinks();
+export async function getAllLinksForClassification(
+  opts: FetchOpts = {}
+): Promise<Array<{ url: string; title: string; snippet: string | null }>> {
+  const data = await fetchAllUserLinks(opts);
   if (!data) return [];
   return data.links.map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
 }

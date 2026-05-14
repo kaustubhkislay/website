@@ -126,16 +126,26 @@ export async function classifyLinks(
       return `- URL: ${link.url} | Title: ${link.title} | Description: ${description}`;
     });
 
-    const prompt = `You are a link classifier. For each link below, assign exactly one category.
+    const prompt = `You are a link classifier. For each link, assign exactly one category. Pick the closest fit — use "other" ONLY as a true last resort when no category plausibly applies.
 
-Categories:
-- research: technical AI papers, interpretability, alignment theory, AI safety research, arxiv papers
-- policy/fieldbuilding: AI policy, regulation, safety evals, institutional responses to AI, EA, community organizing, career strategy in AI safety, movement building
-- self-improvement: productivity, social skills, personal effectiveness, career advice
-- culture: essays, philosophy, general nonfiction, music, art, parties
-- other: anything that doesn't clearly fit the above categories
+Categories (with examples):
+- research: AI alignment / interpretability / safety research, arxiv papers, technical ML posts on LessWrong / Alignment Forum / Redwood / Anthropic / blogs by AI researchers, model evals, agent foundations.
+  Examples: "Steering Might Stop Working Soon", "Hidden Role Games as a Trusted Model Eval", "Fail safer at alignment by channeling reward-hacking", anything on lesswrong.com/posts about ML internals.
+- policy/fieldbuilding: AI policy, AI governance, regulation, EA-Forum posts, AI safety career advice, talent pipelines, movement building, institutional responses, lab strategy critiques, 80,000 Hours-style content.
+  Examples: "What 3,654 Job Postings Tell Us About AI Safety", "AI Populism's Warning Shots", anything on forum.effectivealtruism.org.
+- self-improvement: productivity, habits, social skills, decisionmaking heuristics, personal effectiveness, life advice (non-career).
+  Examples: "Do Thing, Do One Thing", "Why You Can't Just Do Things", "increase your surface area".
+- culture: essays, philosophy, general nonfiction, fiction, poetry, music, art, criticism, memoir.
+  Examples: "The Orange" (poem), "Annoyingly Principled People", literary essays, Substack posts about ideas/life.
+- other: ONLY if it genuinely fits none of the above (e.g. tools, code repos, product pages, news with no analytical content).
 
-Links:
+Tie-breaking rules:
+- LessWrong / Alignment Forum / Redwood / Anthropic blog posts default to "research" unless they're explicitly about policy or careers.
+- Substack / personal blog posts about ideas, life, writing default to "culture" unless clearly self-help (then "self-improvement") or AI policy/career (then "policy/fieldbuilding").
+- Poems, fiction, essays without a research/policy/self-help angle = "culture".
+- When uncertain between two categories, pick the more specific one over "other".
+
+Links to classify:
 ${linkDescriptions.join("\n")}
 
 Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: [{"url":"https://example.com","tag":"research"}]`;
@@ -150,7 +160,7 @@ Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: 
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-flash-lite",
+            model: "google/gemma-4-26b-a4b-it",
             messages: [{ role: "user", content: prompt }],
             response_format: { type: "json_object" },
           }),
@@ -166,22 +176,54 @@ Respond with ONLY a JSON array of objects with "url" and "tag" fields. Example: 
     });
     if (!text) return result;
 
+    // Strip markdown code fences and any prose before/after the JSON payload.
+    // Open-weight models (Gemma etc.) often respond with ```json ... ``` or
+    // include a sentence before the array.
+    const cleaned = (() => {
+      const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      if (fenced) return fenced[1].trim();
+      const firstBracket = text.search(/[\[{]/);
+      const lastBracket = Math.max(text.lastIndexOf("]"), text.lastIndexOf("}"));
+      if (firstBracket !== -1 && lastBracket > firstBracket) {
+        return text.slice(firstBracket, lastBracket + 1);
+      }
+      return text;
+    })();
+
     let raw: unknown;
     try {
-      raw = JSON.parse(text);
+      raw = JSON.parse(cleaned);
     } catch (e) {
       console.error("[classify] JSON parse failed:", e, "text:", text.slice(0, 300));
       return result;
     }
 
-    // Gemini with json_object mode returns an object. Find the array inside.
+    // Models return varied shapes:
+    //   1. Array of {url, tag} (the spec)
+    //   2. Single {url, tag} object (Gemma sometimes does this for 1-item batches)
+    //   3. Wrapper object like { items: [...] } (Gemini json_object mode)
+    //   4. Map shape like { "https://...": "research" }
     let parsed: Array<{ url: string; tag: string }> = [];
     if (Array.isArray(raw)) {
       parsed = raw as Array<{ url: string; tag: string }>;
     } else if (raw && typeof raw === "object") {
       const obj = raw as Record<string, unknown>;
-      const arr = Object.values(obj).find((v) => Array.isArray(v));
-      if (arr) parsed = arr as Array<{ url: string; tag: string }>;
+      if (typeof obj.url === "string" && typeof obj.tag === "string") {
+        parsed = [obj as { url: string; tag: string }];
+      } else {
+        const arr = Object.values(obj).find((v) => Array.isArray(v));
+        if (arr) {
+          parsed = arr as Array<{ url: string; tag: string }>;
+        } else {
+          // url-keyed map: { "https://...": "research", ... }
+          const entries = Object.entries(obj).filter(
+            ([k, v]) => typeof v === "string" && /^https?:\/\//.test(k)
+          );
+          if (entries.length > 0) {
+            parsed = entries.map(([url, tag]) => ({ url, tag: tag as string }));
+          }
+        }
+      }
     }
     if (parsed.length === 0) {
       console.error("[classify] could not find array in LLM response:", JSON.stringify(raw).slice(0, 300));

@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
     // Backfill classification for ALL uncached links, regardless of lastSeenId.
     // Redis is authoritative; module-scoped lastSeenId is volatile on serverless.
-    const all = await getAllLinksForClassification();
+    const all = await getAllLinksForClassification({ fresh: true });
     let classified = 0;
     let uncachedCount = 0;
     const errors: string[] = [];
