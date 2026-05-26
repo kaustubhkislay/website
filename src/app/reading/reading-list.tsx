@@ -1,19 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReadingItem } from "@/lib/curius";
 
-const TAG_CONFIG: Record<string, { label: string; short: string; color: string; hoverColor: string }> = {
-  research:               { label: "research",            short: "r",   color: "#c0392b", hoverColor: "#962d22" },
-  "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "#27ae60", hoverColor: "#1e8449" },
-  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "#2980b9", hoverColor: "#1f6694" },
-  culture:                { label: "culture",              short: "c",   color: "#d4a017", hoverColor: "#a67c12" },
-  other:                  { label: "other",                short: "o",   color: "#7f8c8d", hoverColor: "#5a6566" },
+const TAG_CONFIG: Record<string, { label: string; short: string; color: string }> = {
+  research:               { label: "research",            short: "r",   color: "var(--tag-research)" },
+  "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "var(--tag-policy)" },
+  "self-improvement":     { label: "self-improvement",     short: "s-i", color: "var(--tag-self)" },
+  culture:                { label: "culture",              short: "c",   color: "var(--tag-culture)" },
+  other:                  { label: "other",                short: "o",   color: "var(--tag-other)" },
 };
 
 export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHref: string }) {
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchOpen) inputRef.current?.focus();
+  }, [searchOpen]);
+
+  function toggleSearch() {
+    if (searchOpen) {
+      setSearchOpen(false);
+      setQuery("");
+    } else {
+      setSearchOpen(true);
+    }
+  }
 
   const q = query.toLowerCase();
   const filtered = items.filter((item) => {
@@ -24,57 +39,88 @@ export function ReadingList({ items, backHref }: { items: ReadingItem[]; backHre
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-4">
+      <div className={`flex items-center gap-3 ${searchOpen ? "mb-4" : "mb-8"}`}>
         <a href={backHref} aria-label="Back" className="text-text-ghost hover:text-text-muted transition-colors shrink-0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
         </a>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full bg-transparent border border-border rounded px-3 py-2 text-sm text-text placeholder:text-text-ghost focus:outline-none focus:border-border-accent transition-colors"
-        />
-      </div>
-      <div className="flex gap-2 mb-8 flex-nowrap overflow-x-auto">
-        <button
-          onClick={() => setSelectedTag("all")}
-          className={`text-xs px-2.5 py-1 rounded border transition-colors ${
-            selectedTag === "all"
-              ? "border-border-accent text-text-muted"
-              : "border-border text-text-ghost hover:text-text-muted"
-          }`}
-        >
-          all
-        </button>
-        {Object.entries(TAG_CONFIG).map(([tag, config]) => (
+        <div className="flex gap-2 flex-nowrap overflow-x-auto flex-1 min-w-0">
           <button
-            key={tag}
-            onClick={() => setSelectedTag(tag)}
+            onClick={() => setSelectedTag("all")}
             className={`text-xs px-2.5 py-1 rounded border transition-colors ${
-              selectedTag !== tag ? "border-border text-text-ghost" : ""
+              selectedTag === "all"
+                ? "border-border-accent text-text-muted"
+                : "border-border text-text-ghost hover:text-text-muted"
             }`}
-            style={
-              selectedTag === tag
-                ? { borderColor: config.color, color: config.color }
-                : undefined
-            }
-            onMouseEnter={(e) => {
-              if (selectedTag !== tag) {
-                (e.target as HTMLButtonElement).style.color = config.color;
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (selectedTag !== tag) {
-                (e.target as HTMLButtonElement).style.color = "";
-              }
-            }}
           >
-            {config.label}
+            all
           </button>
-        ))}
+          {Object.entries(TAG_CONFIG).map(([tag, config]) => (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
+              className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+                selectedTag !== tag ? "border-border text-text-ghost" : ""
+              }`}
+              style={
+                selectedTag === tag
+                  ? { borderColor: config.color, color: config.color }
+                  : undefined
+              }
+              onMouseEnter={(e) => {
+                if (selectedTag !== tag) {
+                  (e.target as HTMLButtonElement).style.color = config.color;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedTag !== tag) {
+                  (e.target as HTMLButtonElement).style.color = "";
+                }
+              }}
+            >
+              {config.label}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={toggleSearch}
+          aria-label={searchOpen ? "Close search" : "Search"}
+          aria-expanded={searchOpen}
+          className="shrink-0 text-text-ghost hover:text-text-muted transition-colors"
+        >
+          {searchOpen ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          )}
+        </button>
+      </div>
+      <div
+        className={`grid transition-all duration-200 ease-out ${
+          searchOpen ? "grid-rows-[1fr] opacity-100 mb-8" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search..."
+            value={query}
+            tabIndex={searchOpen ? 0 : -1}
+            aria-hidden={!searchOpen}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") toggleSearch();
+            }}
+            className="w-full bg-transparent border border-border rounded px-3 py-2 text-sm text-text placeholder:text-text-ghost focus:border-border-accent transition-colors"
+          />
+        </div>
       </div>
       {filtered.length > 0 ? (
         <div className="space-y-5">

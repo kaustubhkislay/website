@@ -1,14 +1,10 @@
 import { getHomeReading } from "@/lib/curius";
-import { ThemeToggle } from "./theme-toggle";
 
 export default async function Home() {
   const { today: reading, favorites } = await getHomeReading();
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
-      <div className="flex justify-between items-baseline mb-4">
-        <h1 className="text-base font-semibold text-text">Kaustubh Kislay</h1>
-        <ThemeToggle />
-      </div>
+      <h1 className="text-base font-semibold text-text mb-4">Kaustubh Kislay</h1>
       <p className="text-[15px] text-text-muted leading-relaxed">
         I write on{" "}
         <a href="https://www.lesswrong.com/users/kaustubh-kislay" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">LessWrong</a>
