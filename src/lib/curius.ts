@@ -22,6 +22,7 @@ export interface ReadingItem {
   snippet: string | null;
   highlights: string[];
   tag: LinkTag | null;
+  favorite: boolean;
 }
 
 type FetchOpts = { fresh?: boolean };
@@ -88,6 +89,7 @@ function toReadingItem(item: CuriusLink, userId: number, tag: LinkTag | null): R
       .map((h) => h.highlight)
       .filter(Boolean),
     tag,
+    favorite: item.favorite,
   };
 }
 
@@ -109,6 +111,7 @@ const MANUAL_FAVORITES: ReadingItem[] = [
     snippet: null,
     highlights: [],
     tag: null,
+    favorite: true,
   },
 ];
 
@@ -153,4 +156,26 @@ export async function getAllReading(): Promise<ReadingItem[]> {
     (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
   );
   return applyTags(sorted, data.userId);
+}
+
+// Reading page: favorites (manual + flagged) pinned, plus the full read list.
+export async function getReadingPageData(): Promise<{
+  favorites: ReadingItem[];
+  all: ReadingItem[];
+}> {
+  const data = await fetchAllUserLinks();
+  if (!data) return { favorites: [...MANUAL_FAVORITES], all: [] };
+
+  const sorted = [...data.links].sort(
+    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+  );
+  const all = await applyTags(sorted, data.userId);
+
+  const manualUrls = new Set(MANUAL_FAVORITES.map((m) => m.url));
+  const favorites = [
+    ...MANUAL_FAVORITES,
+    ...all.filter((a) => a.favorite && !manualUrls.has(a.url)),
+  ];
+
+  return { favorites, all };
 }

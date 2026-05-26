@@ -1,132 +1,119 @@
-import { getHomeReading } from "@/lib/curius";
+import type { ReactNode } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ContactBar } from "./contact-bar";
 
-export default async function Home() {
-  const { today: reading, favorites } = await getHomeReading();
+const TOUCHING_GRASS: { label: string }[] = [
+  { label: "Basketball" },
+  { label: "Soccer" },
+  { label: "Badminton" },
+  { label: "MMA" },
+  { label: "Hiking" },
+];
+
+const HIKIKOMORI: { label: string }[] = [
+  { label: "Chess" },
+  { label: "Call of Duty" },
+  { label: "Manga/Manhwa/Anime" },
+];
+
+const FRIENDS: { label: string; href?: string }[] = [
+  { label: "Anaya", href: "https://www.linkedin.com/in/anaya-mandal/" },
+  { label: "Andy", href: "https://yeedrag.github.io/" },
+  { label: "Anish" },
+  { label: "Arya", href: "https://www.linkedin.com/in/arya-p-ai/" },
+  { label: "Celeste", href: "https://wanyuli.com/" },
+  { label: "Jeremy", href: "https://jeremykintana.com/" },
+  { label: "Satya", href: "https://satchlj.com/" },
+  { label: "Will", href: "https://wlanderson.com/" },
+];
+
+export default function Home() {
   return (
-    <div className="mx-auto max-w-[640px] px-6 py-16">
-      <h1 className="text-base font-semibold text-text mb-4">Kaustubh Kislay</h1>
-      <p className="text-[15px] text-text-muted leading-relaxed">
-        I write on{" "}
-        <a href="https://www.lesswrong.com/users/kaustubh-kislay" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">LessWrong</a>
-        {" "}and{" "}
-        <a href="https://substack.com/@kaustubhais" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-hover transition-colors">Substack</a>.
-      </p>
-      <p className="text-[15px] text-text-muted leading-relaxed mb-14">
-        <a href="/reading" className="text-accent hover:text-accent-hover transition-colors">Everything I&apos;ve read</a>.
-      </p>
-      <main className="space-y-14">
-        <section id="reading">
-          <div className="flex items-baseline justify-between mb-5">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-heading">What I&apos;ve Read Today</h2>
-            <span className="text-xs text-text-ghost">{reading.length}</span>
+    <div className="mx-auto max-w-[640px] px-6 py-20 sm:py-28">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight leading-[1.05] text-text [overflow-wrap:anywhere]">
+            Kaustubh Kislay
+          </h1>
+          <ContactBar />
+        </div>
+        {/* Profile photo — public/profile.webp (square crop via object-cover). */}
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden border border-border sm:h-24 sm:w-24">
+          <Image
+            src="/profile.webp"
+            alt="Kaustubh Kislay"
+            fill
+            sizes="96px"
+            className="object-cover"
+          />
+        </div>
+      </div>
+
+      <div className="mt-12 max-w-[60ch] space-y-6">
+        <p className="text-[15px] text-text-muted leading-relaxed">
+          I am a researcher focused on technical AI Safety. I{" "}
+          <Link
+            href="/writing"
+            className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+          >
+            write
+          </Link>{" "}
+          and I also{" "}
+          <Link
+            href="/reading"
+            className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+          >
+            read
+          </Link>
+          .
+        </p>
+
+        <Section label="Affiliations, past and present">
+          <ul className="space-y-2">
+            <Affiliation
+              org="Wisconsin AI Safety Initiative"
+              role="Director"
+              href="https://waisi.org/"
+            />
+            <Affiliation org="SPAR" role="Researcher" />
+            <Affiliation org="UChicago XLab" role="Researcher" />
+            <Affiliation org="Algoverse AI Safety Fellowship" role="Researcher" />
+          </ul>
+        </Section>
+
+        <Section label="Free time">
+          <div className="space-y-4">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
+                If touching grass
+              </p>
+              <InlineLinks items={TOUCHING_GRASS} />
+            </div>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
+                If hikikomorimaxxing
+              </p>
+              <InlineLinks items={HIKIKOMORI} />
+            </div>
           </div>
-          {reading.length > 0 ? (
-            <div className="max-h-60 overflow-y-auto space-y-5 pr-1">
-              {reading.map((item) => (
-                <div key={item.url}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors truncate block"
-                  >
-                    {item.title}
-                  </a>
-                  {item.highlights.length > 0 && (
-                    <div className="mt-2 space-y-1.5">
-                      {item.highlights.map((h, i) => (
-                        <blockquote
-                          key={i}
-                          className="border-l border-border-accent pl-3 text-sm text-text-faint italic"
-                        >
-                          {h}
-                        </blockquote>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-text-ghost">Nothing here yet.</p>
-          )}
-        </section>
+        </Section>
 
-        <section id="favorites">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Favorite Reads</h2>
-          {favorites.length > 0 ? (
-            <div className="space-y-5">
-              {favorites.map((item) => (
-                <div key={item.url}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors"
-                  >
-                    {item.title}
-                  </a>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-text-ghost">Nothing here yet.</p>
-          )}
-        </section>
+        <Section
+          label={
+            <>
+              I have friends{" "}
+              <sub className="text-[0.75em] font-normal normal-case tracking-normal text-text-faint">
+                (somehow)
+              </sub>
+            </>
+          }
+        >
+          <InlineLinks items={FRIENDS} />
+        </Section>
+      </div>
 
-        <section id="writers">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">People Who Write Well</h2>
-          <ul className="space-y-1">
-            <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://substack.com/@jeremykintana" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Jeremy</a>
-              <span className="text-sm text-text-ghost">Substack</span>
-            </li>
-            <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://satchlj.com/" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Satya</a>
-              <span className="text-sm text-text-ghost">Blog</span>
-            </li>
-            <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://substack.com/@atharvanihalani" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Atharva</a>
-              <span className="text-sm text-text-ghost">Substack</span>
-            </li>
-            <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://substack.com/@iviiiiiii" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Olivia</a>
-              <span className="text-sm text-text-ghost">Substack</span>
-            </li>
-            <li className="flex justify-between items-baseline gap-4 py-1">
-              <a href="https://wanyuli.com/" target="_blank" rel="noopener noreferrer" className="text-[15px] text-text hover:text-accent-hover transition-colors">Celeste</a>
-              <span className="text-sm text-text-ghost">Blog</span>
-            </li>
-          </ul>
-        </section>
-
-        <section id="find-me">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-heading mb-5">Where to Find Me</h2>
-          <ul className="space-y-3">
-            <SocialLink label="GitHub" href="https://github.com/kaustubhkislay" />
-            <SocialLink label="LinkedIn" href="https://www.linkedin.com/in/kaustubh-kislay" />
-            <SocialLink label="X" href="https://x.com/kaustubhais" />
-            <SocialLink label="Substack" href="https://substack.com/@kaustubhais" />
-            <SocialLink label="LessWrong" href="https://www.lesswrong.com/users/kaustubh-kislay" />
-            <SocialLink label="Curius" href="https://curius.app/kaustubh-kislay" />
-            <SocialLink label="Email" description="kaustubh[dot]kislay[at]gmail[dot]com" />
-            <SocialLink label="Signal" description="Kaustubh.62" />
-            <SocialLink label="Book a chat" href="https://calendar.app.google/Zu5o4mviEVapDrZE9" />
-            <li className="flex items-baseline gap-4">
-              <a
-                href="https://forms.gle/QnB7vAfVV3QgAta1A"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[15px] text-accent hover:text-accent-hover transition-colors"
-              >
-                Leave anonymous feedback
-              </a>
-            </li>
-          </ul>
-        </section>
-      </main>
-
-      <nav className="mt-16 flex justify-between items-center">
+      <nav className="mt-12 flex justify-between items-center">
         <a
           href="https://wanyuli.com/"
           target="_blank"
@@ -150,42 +137,70 @@ export default async function Home() {
           </svg>
         </a>
       </nav>
-
-      <footer className="mt-6">
-        <p className="text-sm text-text-ghost">
-          &copy; {new Date().getFullYear()} Kaustubh Kislay
-        </p>
-      </footer>
     </div>
   );
 }
 
-function SocialLink({
-  label,
+function Section({ label, children }: { label: ReactNode; children: ReactNode }) {
+  return (
+    <section>
+      <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-heading">
+        {label}
+      </h2>
+      <div className="mt-3 pl-5">{children}</div>
+    </section>
+  );
+}
+
+function Affiliation({
+  org,
+  role,
   href,
-  description,
 }: {
-  label: string;
+  org: string;
+  role: string;
   href?: string;
-  description?: string;
 }) {
   return (
-    <li className="flex items-baseline gap-4">
+    <li className="text-[15px] leading-relaxed text-text">
+      {role}
+      <span className="text-text-faint"> @ </span>
       {href ? (
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[15px] font-medium text-text hover:text-accent-hover transition-colors"
+          className="text-text-faint underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
         >
-          {label}
+          {org}
         </a>
       ) : (
-        <span className="text-[15px] font-medium text-text">{label}</span>
-      )}
-      {description && (
-        <span className="text-sm text-text-ghost">{description}</span>
+        <span className="text-text-faint">{org}</span>
       )}
     </li>
+  );
+}
+
+function InlineLinks({ items }: { items: { label: string; href?: string }[] }) {
+  return (
+    <p className="text-[15px] leading-relaxed text-text-muted">
+      {items.map((it, i) => (
+        <span key={it.label}>
+          {i > 0 && ", "}
+          {it.href ? (
+            <a
+              href={it.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-text underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+            >
+              {it.label}
+            </a>
+          ) : (
+            <span>{it.label}</span>
+          )}
+        </span>
+      ))}
+    </p>
   );
 }

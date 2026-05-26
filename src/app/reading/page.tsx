@@ -1,4 +1,4 @@
-import { getAllReading } from "@/lib/curius";
+import { getReadingPageData } from "@/lib/curius";
 import { ReadingList } from "./reading-list";
 
 export const revalidate = 3600;
@@ -8,11 +8,11 @@ export const metadata = {
 };
 
 export default async function ReadingPage() {
-  const items = await getAllReading();
+  const { favorites, all } = await getReadingPageData();
 
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
-      <ReadingList items={items} backHref="/" />
+      <ReadingList items={all} favorites={favorites} backHref="/" />
     </div>
   );
 }

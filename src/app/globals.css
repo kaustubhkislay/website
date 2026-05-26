@@ -1,7 +1,13 @@
+/* Hallmark · redesign · genre: editorial (brutalist voice) · macrostructure: Index/Hub (line-light)
+ * tone: eco-brutalist · anchor hue: moss green over warm-clay neutrals
+ * pre-emit critique: P5 H4 E4 S5 R5 V5
+ * contrast: pass (46–50) · nav: hub links · footer: none · mobile: pass
+ */
 @import "tailwindcss";
 
 @theme inline {
   --font-sans: "rl-limo", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 
   /* semantic color tokens — mapped to CSS vars */
   --color-bg: var(--bg);
@@ -24,10 +30,10 @@
   --text-faint: #6f5a50;
   --text-ghost: #7d675b;
   --heading: #74604f;
-  --accent: #a0565a;
-  --accent-hover: #783a3e;
+  --accent: #4a5d3a;
+  --accent-hover: #3a4a2d;
   --border: #ddd4cb;
-  --border-accent: #c4a8a0;
+  --border-accent: #aeb39a;
   /* reading-list tag hues — warm-tuned, each ≥4.5:1 on --bg */
   --tag-research: #a23b2e;
   --tag-policy: #2f7a42;
@@ -37,9 +43,14 @@
   --glow-opacity: 1;
   --glow-gradient: radial-gradient(
     ellipse 70% 45% at 50% 100%,
-    rgba(160, 86, 90, 0.04) 0%,
+    rgba(74, 93, 58, 0.05) 0%,
     transparent 70%
   );
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
