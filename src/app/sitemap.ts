@@ -1,14 +1,21 @@
 import type { MetadataRoute } from "next";
 
+export const BASE_URL = "https://kaustubhkislay.com";
+
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
   return [
     {
-      url: "https://kaustubhkislay.com",
-      lastModified: new Date(),
+      url: BASE_URL,
+      lastModified,
+      changeFrequency: "hourly",
+      priority: 1,
     },
     {
-      url: "https://kaustubhkislay.com/reading",
-      lastModified: new Date(),
+      url: `${BASE_URL}/reading`,
+      lastModified,
+      changeFrequency: "hourly",
+      priority: 0.8,
     },
   ];
 }
