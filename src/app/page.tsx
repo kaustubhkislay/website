@@ -44,7 +44,8 @@ export default function Home() {
             src="/profile.webp"
             alt="Kaustubh Kislay"
             fill
-            sizes="96px"
+            priority
+            sizes="(min-width: 640px) 96px, 64px"
             className="object-cover"
           />
         </div>
