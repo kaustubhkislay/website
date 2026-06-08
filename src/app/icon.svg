@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#f5f0eb" />
+  <rect width="64" height="64" fill="#ffffff" />
   <text
     x="32"
     y="45"
@@ -8,6 +8,6 @@
     font-size="38"
     font-weight="700"
     letter-spacing="-2"
-    fill="#4a5d3a"
+    fill="#2f6b3a"
   >KK</text>
 </svg>

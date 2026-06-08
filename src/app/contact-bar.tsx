@@ -52,19 +52,18 @@ export function ContactBar() {
           aria-expanded={open}
           className={`${ICON} active:translate-y-px`}
         >
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-5 w-5">
+          <svg viewBox="2 2 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Zm0 2v.4l8 5 8-5V6H4Zm16 2.75-7.47 4.67a1 1 0 0 1-1.06 0L4 8.75V18h16V8.75Z" />
           </svg>
         </button>
-      </div>
-
-      <div
-        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          open ? "mt-2 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <span className="select-all break-all text-sm text-text-faint">{EMAIL}</span>
+        <div
+          className={`grid transition-[grid-template-columns,opacity] duration-300 ease-out ${
+            open ? "grid-cols-[1fr] opacity-100" : "grid-cols-[0fr] opacity-0"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <span className="select-all whitespace-nowrap text-sm text-text-faint">{EMAIL}</span>
+          </div>
         </div>
       </div>
     </div>

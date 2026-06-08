@@ -31,44 +31,52 @@ const FRIENDS: { label: string; href?: string }[] = [
 export default function Home() {
   return (
     <div className="mx-auto max-w-[640px] px-6 py-20 sm:py-28">
-      <div className="flex items-start justify-between gap-4">
+      {/* Header + content are grouped so the decorative sketch can span from the
+          top of the header down to the top of the footer (the -bottom-12 offset
+          reaches across the nav's mt-12 gap). It sits in the whitespace to the
+          right of the body text, right-aligned to the column/footer edge, and
+          behind the text (-z-10) so words stay readable. Shown at all sizes. */}
+      <div className="relative">
+        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 w-72">
+          <Image
+            src="/giorno-sketch.webp"
+            alt=""
+            fill
+            sizes="288px"
+            className="select-none object-contain object-right"
+          />
+        </div>
+
         <div className="min-w-0">
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight leading-[1.05] text-text [overflow-wrap:anywhere]">
             Kaustubh Kislay
           </h1>
           <ContactBar />
         </div>
-        {/* Profile photo — public/profile.webp (square crop via object-cover). */}
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden border border-border sm:h-24 sm:w-24">
-          <Image
-            src="/profile.webp"
-            alt="Kaustubh Kislay"
-            fill
-            priority
-            sizes="(min-width: 640px) 96px, 64px"
-            className="object-cover"
-          />
-        </div>
-      </div>
 
-      <div className="mt-12 max-w-[60ch] space-y-6">
-        <p className="text-[15px] text-text-muted leading-relaxed">
-          I am a researcher focused on technical AI Safety. I{" "}
-          <Link
-            href="/writing"
-            className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-          >
-            write
-          </Link>{" "}
-          and I also{" "}
-          <Link
-            href="/reading"
-            className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-          >
-            read
-          </Link>
-          .
-        </p>
+        <div className="mt-6 max-w-[60ch] space-y-6">
+        <div className="space-y-1">
+          <p className="text-[15px] text-text-muted leading-relaxed">
+            I am a researcher focused on making things better.
+          </p>
+          <p className="text-[15px] text-text-muted leading-relaxed">
+            I{" "}
+            <Link
+              href="/writing"
+              className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+            >
+              write
+            </Link>{" "}
+            and I{" "}
+            <Link
+              href="/reading"
+              className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+            >
+              read
+            </Link>
+            .
+          </p>
+        </div>
 
         <Section label="Affiliations, past and present">
           <ul className="space-y-2">
@@ -86,13 +94,13 @@ export default function Home() {
         <Section label="Free time">
           <div className="space-y-4">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
+              <p className="font-sans text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
                 If touching grass
               </p>
               <InlineLinks items={TOUCHING_GRASS} />
             </div>
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
+              <p className="font-sans text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
                 If hikikomorimaxxing
               </p>
               <InlineLinks items={HIKIKOMORI} />
@@ -100,18 +108,10 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section
-          label={
-            <>
-              I have friends{" "}
-              <sub className="text-[0.75em] font-normal normal-case tracking-normal text-text-faint">
-                (somehow)
-              </sub>
-            </>
-          }
-        >
+        <Section label="I have friends">
           <InlineLinks items={FRIENDS} />
         </Section>
+        </div>
       </div>
 
       <nav className="mt-12 flex justify-between items-center">
@@ -119,23 +119,17 @@ export default function Home() {
           href="https://wanyuli.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-text-muted hover:text-accent-hover transition-colors"
+          className="text-sm text-text hover:text-text-faint transition-colors"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Celeste
+          <span className="font-bold">{"<"}</span> Celeste
         </a>
         <a
           href="https://www.wlanderson.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-text-muted hover:text-accent-hover transition-colors"
+          className="text-sm text-text hover:text-text-faint transition-colors"
         >
-          Will
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+          Will <span className="font-bold">{">"}</span>
         </a>
       </nav>
     </div>
@@ -145,7 +139,7 @@ export default function Home() {
 function Section({ label, children }: { label: ReactNode; children: ReactNode }) {
   return (
     <section>
-      <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-heading">
+      <h2 className="font-sans text-xs uppercase tracking-[0.18em] text-heading">
         {label}
       </h2>
       <div className="mt-3 pl-5">{children}</div>

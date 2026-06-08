@@ -12,7 +12,7 @@ export default async function ReadingPage() {
 
   return (
     <div className="mx-auto max-w-[640px] px-6 py-16">
-      <ReadingList items={all} favorites={favorites} backHref="/" />
+      <ReadingList items={all} favorites={favorites} />
     </div>
   );
 }

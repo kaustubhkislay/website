@@ -15,11 +15,9 @@ const TAG_CONFIG: Record<string, { label: string; short: string; color: string }
 export function ReadingList({
   items,
   favorites,
-  backHref,
 }: {
   items: ReadingItem[];
   favorites: ReadingItem[];
-  backHref: string;
 }) {
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -47,20 +45,20 @@ export function ReadingList({
   });
 
   const chip =
-    "font-mono text-[11px] uppercase tracking-wider px-3 py-1 border whitespace-nowrap transition-colors active:translate-y-px";
+    "font-sans text-[11px] uppercase tracking-wider px-3 py-1 border whitespace-nowrap transition-colors active:translate-y-px";
 
   return (
     <>
       <Link
-        href={backHref}
-        className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-faint hover:text-accent-hover transition-colors"
+        href="/"
+        className="font-sans text-[11px] uppercase tracking-[0.18em] text-text hover:text-text-faint transition-colors"
       >
-        ← Home
+        <span className="font-bold">{"<"}</span> Home
       </Link>
 
       {favorites.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-heading mb-5">
+          <h2 className="font-sans text-xs uppercase tracking-[0.18em] text-heading mb-5">
             Favorites
           </h2>
           <ul className="space-y-3">
@@ -81,7 +79,7 @@ export function ReadingList({
       )}
 
       <section className="mt-12">
-        <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-heading mb-5">
+        <h2 className="font-sans text-xs uppercase tracking-[0.18em] text-heading mb-5">
           Everything I&apos;ve read
         </h2>
 
@@ -180,7 +178,7 @@ export function ReadingList({
             })}
           </ul>
         ) : (
-          <p className="font-mono text-xs uppercase tracking-wider text-text-ghost">
+          <p className="font-sans text-xs uppercase tracking-wider text-text-ghost">
             {query ? "No matches found." : "Nothing here yet."}
           </p>
         )}
