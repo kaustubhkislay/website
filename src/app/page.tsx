@@ -35,9 +35,10 @@ export default function Home() {
           top of the header down to the top of the footer (the -bottom-12 offset
           reaches across the nav's mt-12 gap). It sits in the whitespace to the
           right of the body text, right-aligned to the column/footer edge, and
-          behind the text (-z-10) so words stay readable. Shown at all sizes. */}
+          behind the text (-z-10) so words stay readable. Hidden on phones
+          (<640px, no room); shown from sm+ once the column hits max-width. */}
       <div className="relative">
-        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 w-72">
+        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-72 sm:block">
           <Image
             src="/giorno-sketch.webp"
             alt=""
