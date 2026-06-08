@@ -57,13 +57,24 @@ export function ContactBar() {
           </svg>
         </button>
         <div
-          className={`grid transition-[grid-template-columns,opacity] duration-300 ease-out ${
+          className={`hidden transition-[grid-template-columns,opacity] duration-300 ease-out sm:grid ${
             open ? "grid-cols-[1fr] opacity-100" : "grid-cols-[0fr] opacity-0"
           }`}
         >
           <div className="overflow-hidden">
             <span className="select-all whitespace-nowrap text-sm text-text-faint">{EMAIL}</span>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile (<sm): email drops vertically beneath the icons */}
+      <div
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out sm:hidden ${
+          open ? "mt-2 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <span className="select-all break-all text-sm text-text-faint">{EMAIL}</span>
         </div>
       </div>
     </div>

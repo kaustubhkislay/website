@@ -13,6 +13,10 @@ const FEATURED: { title: string; href: string }[] = [
     title: "How does reasoning affect Ethical/Moral task results?",
     href: "https://www.lesswrong.com/posts/q8ZWCKZd24wDrGX7p/how-does-reasoning-affect-ethical-moral-task-results",
   },
+  {
+    title: "South Korea and the HBM Bottleneck",
+    href: "https://lambheart.substack.com/p/south-korea-and-the-hbm-bottleneck",
+  },
 ];
 
 export default function WritingPage() {
