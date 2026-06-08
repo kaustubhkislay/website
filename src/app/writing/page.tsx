@@ -51,6 +51,15 @@ export default function WritingPage() {
         >
           Substack
         </a>
+        <span className="text-border-accent"> | </span>
+        <a
+          href="https://scholar.google.com/citations?user=3INpQ98AAAAJ&hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-accent-hover transition-colors"
+        >
+          G-Scholar
+        </a>
       </p>
 
       <section className="mt-10">
