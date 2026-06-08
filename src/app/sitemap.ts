@@ -8,13 +8,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: BASE_URL,
       lastModified,
-      changeFrequency: "hourly",
+      changeFrequency: "monthly",
       priority: 1,
     },
     {
       url: `${BASE_URL}/reading`,
       lastModified,
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 0.8,
     },
     {
