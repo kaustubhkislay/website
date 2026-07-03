@@ -117,8 +117,7 @@ export async function buildReadingSnapshot(data: Crawl): Promise<SnapshotItem[]>
   const sorted = [...data.links].sort(
     (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
   );
-  // Falls back to null (renders as no badge) instead of "other", so unclassified
-  // links don't masquerade as deliberately-classified-other.
+  // Unclassified links get null, which renders as no badge.
   const tagMap = await getCachedTags(sorted.map((l) => ({ url: l.link })));
   return sorted.map((l) => ({
     title: l.title,

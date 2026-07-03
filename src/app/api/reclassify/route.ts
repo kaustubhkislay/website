@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
   } else if (mode === "all") {
     toReclassify = all;
   } else {
-    // "other": only links currently tagged as other
+    // "other": links still carrying the retired "other" tag in Redis.
+    // No longer a valid LinkTag, so these read as unclassified anyway and the
+    // cron re-tags them — this mode just forces the sweep immediately.
     toReclassify = all.filter((l, i) => existingTags[i] === "other");
   }
 

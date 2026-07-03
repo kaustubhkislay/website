@@ -4,15 +4,13 @@ export type LinkTag =
   | "research"
   | "policy/fieldbuilding"
   | "self-improvement"
-  | "culture"
-  | "other";
+  | "culture";
 
 const VALID_TAGS = new Set<LinkTag>([
   "research",
   "policy/fieldbuilding",
   "self-improvement",
   "culture",
-  "other",
 ]);
 
 async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
@@ -126,7 +124,7 @@ export async function classifyLinks(
       return `- URL: ${link.url} | Title: ${link.title} | Description: ${description}`;
     });
 
-    const prompt = `You are a link classifier. For each link, assign exactly one category. Pick the closest fit — use "other" ONLY as a true last resort when no category plausibly applies.
+    const prompt = `You are a link classifier. For each link, assign exactly one of the four categories below. There is no "other" or "unknown" — always pick the closest fit, even for tools, code repos, product pages, or news.
 
 Categories (with examples):
 - research: AI alignment / interpretability / safety research, arxiv papers, technical ML posts on LessWrong / Alignment Forum / Redwood / Anthropic / blogs by AI researchers, model evals, agent foundations.
@@ -137,13 +135,12 @@ Categories (with examples):
   Examples: "Do Thing, Do One Thing", "Why You Can't Just Do Things", "increase your surface area".
 - culture: essays, philosophy, general nonfiction, fiction, poetry, music, art, criticism, memoir.
   Examples: "The Orange" (poem), "Annoyingly Principled People", literary essays, Substack posts about ideas/life.
-- other: ONLY if it genuinely fits none of the above (e.g. tools, code repos, product pages, news with no analytical content).
 
 Tie-breaking rules:
 - LessWrong / Alignment Forum / Redwood / Anthropic blog posts default to "research" unless they're explicitly about policy or careers.
 - Substack / personal blog posts about ideas, life, writing default to "culture" unless clearly self-help (then "self-improvement") or AI policy/career (then "policy/fieldbuilding").
 - Poems, fiction, essays without a research/policy/self-help angle = "culture".
-- When uncertain between two categories, pick the more specific one over "other".
+- Technical tools, code repos, and ML product pages lean "research"; everything else that resists categorization leans "culture".
 
 Links to classify:
 ${linkDescriptions.join("\n")}

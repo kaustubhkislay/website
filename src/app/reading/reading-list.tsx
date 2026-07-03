@@ -9,7 +9,6 @@ const TAG_CONFIG: Record<string, { label: string; short: string; color: string }
   "policy/fieldbuilding": { label: "policy/fieldbuilding", short: "p/f", color: "var(--tag-policy)" },
   "self-improvement":     { label: "self-improvement",     short: "s-i", color: "var(--tag-self)" },
   culture:                { label: "culture",              short: "c",   color: "var(--tag-culture)" },
-  other:                  { label: "other",                short: "o",   color: "var(--tag-other)" },
 };
 
 export function ReadingList({
