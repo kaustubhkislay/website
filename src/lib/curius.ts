@@ -158,13 +158,20 @@ export async function getAllReading(): Promise<ReadingItem[]> {
   return applyTags(sorted, data.userId);
 }
 
+// Slim wire type for the reading page. Snippets/highlights/dates are ~80% of
+// the raw data but never rendered, so they must not reach the client props —
+// they'd be serialized into the RSC payload and shipped on every page load.
+export type ReadingListItem = Pick<ReadingItem, "title" | "url" | "tag">;
+
 // Reading page: favorites (manual + flagged) pinned, plus the full read list.
 export async function getReadingPageData(): Promise<{
-  favorites: ReadingItem[];
-  all: ReadingItem[];
+  favorites: ReadingListItem[];
+  all: ReadingListItem[];
 }> {
+  const slim = ({ title, url, tag }: ReadingItem): ReadingListItem => ({ title, url, tag });
+
   const data = await fetchAllUserLinks();
-  if (!data) return { favorites: [...MANUAL_FAVORITES], all: [] };
+  if (!data) return { favorites: MANUAL_FAVORITES.map(slim), all: [] };
 
   const sorted = [...data.links].sort(
     (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
@@ -177,5 +184,5 @@ export async function getReadingPageData(): Promise<{
     ...all.filter((a) => a.favorite && !manualUrls.has(a.url)),
   ];
 
-  return { favorites, all };
+  return { favorites: favorites.map(slim), all: all.map(slim) };
 }

@@ -1,11 +1,15 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import { classifyLinks, getCachedTags } from "@/lib/classify";
+import { classifyLinks, getCachedTags, getRedis } from "@/lib/classify";
 import { getAllLinksForClassification } from "@/lib/curius";
 
 const CURIUS_USERNAME = "kaustubh-kislay";
 const BATCH_SIZE = 25;
-let lastSeenId: number | null = null;
+const LAST_SEEN_KEY = "cron:lastSeenLinkId";
+// Volatile fallback when Redis is absent. Module scope resets on every cold
+// start, which is why Redis is the source of truth: a null lastSeenId must
+// never be treated as "new content" or the page cache gets purged each run.
+let lastSeenIdFallback: number | null = null;
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -62,14 +66,33 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const newContent = latest && latest.id !== lastSeenId;
-    if (newContent) {
-      lastSeenId = latest.id;
-      revalidatePath("/");
-      revalidatePath("/reading");
-    } else if (classified > 0) {
-      // Tags changed even without new links — refresh rendered pages.
-      revalidatePath("/");
+    const redis = getRedis();
+    let lastSeenId = lastSeenIdFallback;
+    if (redis) {
+      try {
+        lastSeenId = await redis.get<number>(LAST_SEEN_KEY);
+      } catch {
+        // Redis unavailable — fall back to the volatile module value.
+      }
+    }
+
+    // Only revalidate for genuinely new content: a null lastSeenId means we
+    // have no baseline (first run / Redis miss), so record it and wait for the
+    // next tick rather than purging the cache spuriously.
+    const newContent = Boolean(latest) && lastSeenId !== null && latest.id !== lastSeenId;
+    if (latest && latest.id !== lastSeenId) {
+      lastSeenIdFallback = latest.id;
+      if (redis) {
+        try {
+          await redis.set(LAST_SEEN_KEY, latest.id);
+        } catch {
+          // Persist failed; the fallback still covers warm instances.
+        }
+      }
+    }
+
+    if (newContent || classified > 0) {
+      // The home page doesn't render Curius data, so only /reading needs it.
       revalidatePath("/reading");
     }
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { ReadingItem } from "@/lib/curius";
+import type { ReadingListItem } from "@/lib/curius";
 
 const TAG_CONFIG: Record<string, { label: string; short: string; color: string }> = {
   research:               { label: "research",            short: "r",   color: "var(--tag-research)" },
@@ -16,8 +16,8 @@ export function ReadingList({
   items,
   favorites,
 }: {
-  items: ReadingItem[];
-  favorites: ReadingItem[];
+  items: ReadingListItem[];
+  favorites: ReadingListItem[];
 }) {
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
