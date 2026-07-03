@@ -1,15 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
-import { classifyLinks } from "@/lib/classify";
-import { getAllLinksForClassification } from "@/lib/curius";
-
-function getRedis(): Redis | null {
-  const url = process.env.KV_REST_API_URL || process.env.redis1_KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.redis1_KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
+import { classifyLinks, getRedis } from "@/lib/classify";
+import { buildReadingSnapshot, fetchAllUserLinks, saveReadingSnapshot } from "@/lib/curius";
 
 // POST /api/reclassify
 // Body: { mode: "other" | "all" | "urls", urls?: string[] }
@@ -29,10 +21,11 @@ export async function POST(req: NextRequest) {
   };
   const mode = body.mode ?? "other";
 
-  const all = await getAllLinksForClassification({ fresh: true });
-  if (all.length === 0) {
+  const data = await fetchAllUserLinks({ fresh: true });
+  if (!data || data.links.length === 0) {
     return NextResponse.json({ error: "No links found" }, { status: 500 });
   }
+  const all = data.links.map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
 
   // Read every existing tag in one batch.
   const keys = all.map((l) => `tag:${l.url}`);
@@ -70,7 +63,11 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  revalidatePath("/");
+  // The snapshot embeds tags, so rebuild it before revalidating or the page
+  // regenerates from pre-reclassification data.
+  await saveReadingSnapshot(await buildReadingSnapshot(data));
+
+  // The home page doesn't render Curius data, so only /reading needs it.
   revalidatePath("/reading");
 
   return NextResponse.json({

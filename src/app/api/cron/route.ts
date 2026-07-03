@@ -1,9 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { classifyLinks, getCachedTags, getRedis } from "@/lib/classify";
-import { getAllLinksForClassification } from "@/lib/curius";
+import { buildReadingSnapshot, fetchAllUserLinks, saveReadingSnapshot } from "@/lib/curius";
 
-const CURIUS_USERNAME = "kaustubh-kislay";
 const BATCH_SIZE = 25;
 const LAST_SEEN_KEY = "cron:lastSeenLinkId";
 // Volatile fallback when Redis is absent. Module scope resets on every cold
@@ -24,30 +23,18 @@ export async function GET(req: NextRequest) {
   };
 
   try {
-    const userRes = await fetch(`https://curius.app/api/users/${CURIUS_USERNAME}`, {
-      headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` },
-      cache: "no-store",
-    });
-    if (!userRes.ok) return NextResponse.json({ skipped: true, env, stage: "userRes" });
+    // One fresh crawl feeds everything below: the new-content check, the
+    // classification backfill, and the page snapshot.
+    const data = await fetchAllUserLinks({ fresh: true });
+    if (!data) return NextResponse.json({ skipped: true, env, stage: "crawl" });
 
-    const { user } = await userRes.json();
-
-    const linksRes = await fetch(`https://curius.app/api/users/${user.id}/links?page=0`, {
-      headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` },
-      cache: "no-store",
-    });
-    if (!linksRes.ok) return NextResponse.json({ skipped: true, env, stage: "linksRes" });
-
-    const { userSaved } = await linksRes.json();
-    const latest = userSaved
-      ?.sort(
-        (a: { createdDate: string }, b: { createdDate: string }) =>
-          new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-      )[0];
+    const latest = [...data.links].sort(
+      (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+    )[0];
 
     // Backfill classification for ALL uncached links, regardless of lastSeenId.
     // Redis is authoritative; module-scoped lastSeenId is volatile on serverless.
-    const all = await getAllLinksForClassification({ fresh: true });
+    const all = data.links.map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
     let classified = 0;
     let uncachedCount = 0;
     const errors: string[] = [];
@@ -65,6 +52,11 @@ export async function GET(req: NextRequest) {
         }
       }
     }
+
+    // Persist the render-ready snapshot (built after classification so fresh
+    // tags are included); /reading regenerates from this single Redis key
+    // instead of re-crawling Curius.
+    await saveReadingSnapshot(await buildReadingSnapshot(data));
 
     const redis = getRedis();
     let lastSeenId = lastSeenIdFallback;

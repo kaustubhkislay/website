@@ -1,7 +1,12 @@
-import { getCachedTags, type LinkTag } from "./classify";
+import { getCachedTags, getRedis, type LinkTag } from "./classify";
 
 const CURIUS_USERNAME = "kaustubh-kislay";
 const PAGE_BATCH = 4;
+// Curius serves fixed 25-link pages, so a short page marks the end of the
+// list — no need to fetch further batches just to find an empty page.
+const PAGE_SIZE = 25;
+const USER_ID_KEY = "curius:userId";
+const SNAPSHOT_KEY = "curius:snapshot";
 
 interface CuriusLink {
   id: number;
@@ -15,15 +20,16 @@ interface CuriusLink {
   userIds: number[];
 }
 
-export interface ReadingItem {
+// Slim wire type for the reading page. Snippets/highlights/dates are ~80% of
+// the raw data but never rendered, so they must not reach the client props —
+// they'd be serialized into the RSC payload and shipped on every page load.
+export type ReadingListItem = {
   title: string;
   url: string;
-  date: string;
-  snippet: string | null;
-  highlights: string[];
   tag: LinkTag | null;
-  favorite: boolean;
-}
+};
+
+type SnapshotItem = ReadingListItem & { favorite: boolean };
 
 type FetchOpts = { fresh?: boolean };
 
@@ -34,155 +40,149 @@ function cacheOpt(fresh: boolean | undefined, revalidate: number): RequestInit {
 }
 
 async function fetchUserId(opts: FetchOpts = {}): Promise<number | null> {
+  // The id behind a username never changes, so Redis short-circuits the
+  // ~2s Curius profile lookup on every crawl.
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const cached = await redis.get<number>(USER_ID_KEY);
+      if (cached) return cached;
+    } catch {
+      // Redis unavailable — fall through to the API lookup.
+    }
+  }
+
   const userRes = await fetch(
     `https://curius.app/api/users/${CURIUS_USERNAME}`,
     { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, ...cacheOpt(opts.fresh, 86400) }
   );
   if (!userRes.ok) return null;
   const { user } = await userRes.json();
+  if (redis) {
+    try {
+      await redis.set(USER_ID_KEY, user.id);
+    } catch {
+      // Cache write failed; the lookup still succeeded.
+    }
+  }
   return user.id;
 }
 
-async function fetchPage(userId: number, page: number, opts: FetchOpts = {}): Promise<CuriusLink[] | null> {
+async function fetchPage(userId: number, page: number, opts: FetchOpts = {}): Promise<CuriusLink[]> {
   const res = await fetch(
     `https://curius.app/api/users/${userId}/links?page=${page}`,
     { headers: { Referer: `https://curius.app/${CURIUS_USERNAME}` }, ...cacheOpt(opts.fresh, 3600) }
   );
-  if (!res.ok) return null;
+  // Throw rather than return a sentinel: an HTTP error must not read as
+  // end-of-list, or one flaky response silently truncates the crawl.
+  if (!res.ok) throw new Error(`Curius page ${page}: HTTP ${res.status}`);
   const { userSaved } = await res.json();
   return (userSaved as CuriusLink[]) ?? [];
 }
 
 export async function fetchAllUserLinks(opts: FetchOpts = {}): Promise<{ links: CuriusLink[]; userId: number } | null> {
-  const userId = await fetchUserId(opts);
-  if (!userId) return null;
+  try {
+    const userId = await fetchUserId(opts);
+    if (!userId) return null;
 
-  const all: CuriusLink[] = [];
-  let startPage = 0;
-  // Fetch pages in parallel batches; stop when a batch returns any empty page.
-  while (true) {
-    const pages = Array.from({ length: PAGE_BATCH }, (_, i) => startPage + i);
-    const results = await Promise.all(pages.map((p) => fetchPage(userId, p, opts)));
-    let done = false;
-    for (const r of results) {
-      if (!r || r.length === 0) { done = true; continue; }
-      all.push(...r);
+    const all: CuriusLink[] = [];
+    let startPage = 0;
+    // Fetch pages in parallel batches; a short page ends the crawl.
+    while (true) {
+      const pages = Array.from({ length: PAGE_BATCH }, (_, i) => startPage + i);
+      const results = await Promise.all(pages.map((p) => fetchPage(userId, p, opts)));
+      let done = false;
+      for (const r of results) {
+        all.push(...r);
+        if (r.length < PAGE_SIZE) {
+          done = true;
+          break;
+        }
+      }
+      if (done) break;
+      startPage += PAGE_BATCH;
     }
-    if (done) break;
-    startPage += PAGE_BATCH;
+
+    return { links: all, userId };
+  } catch {
+    // Callers treat null as "crawl unavailable" and fall back to the snapshot
+    // (or empty) — a partial list is never returned or persisted.
+    return null;
   }
-
-  return { links: all, userId };
 }
 
-function toReadingItem(item: CuriusLink, userId: number, tag: LinkTag | null): ReadingItem {
-  return {
-    title: item.title,
-    url: item.link,
-    date: new Date(item.createdDate).toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    }),
-    snippet: item.snippet && item.snippet !== "N/A" ? item.snippet : null,
-    highlights: item.highlights
-      .filter((h) => h.userId === userId)
-      .map((h) => h.highlight)
-      .filter(Boolean),
-    tag,
-    favorite: item.favorite,
-  };
-}
+type Crawl = NonNullable<Awaited<ReturnType<typeof fetchAllUserLinks>>>;
 
-async function applyTags(
-  links: CuriusLink[],
-  userId: number
-): Promise<ReadingItem[]> {
-  const tagMap = await getCachedTags(links.map((l) => ({ url: l.link })));
+export async function buildReadingSnapshot(data: Crawl): Promise<SnapshotItem[]> {
+  const sorted = [...data.links].sort(
+    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+  );
   // Falls back to null (renders as no badge) instead of "other", so unclassified
   // links don't masquerade as deliberately-classified-other.
-  return links.map((item) => toReadingItem(item, userId, tagMap.get(item.link) ?? null));
+  const tagMap = await getCachedTags(sorted.map((l) => ({ url: l.link })));
+  return sorted.map((l) => ({
+    title: l.title,
+    url: l.link,
+    tag: tagMap.get(l.link) ?? null,
+    favorite: l.favorite,
+  }));
 }
 
-const MANUAL_FAVORITES: ReadingItem[] = [
+export async function saveReadingSnapshot(items: SnapshotItem[]): Promise<void> {
+  const redis = getRedis();
+  if (!redis || items.length === 0) return;
+  try {
+    await redis.set(SNAPSHOT_KEY, items);
+  } catch {
+    // Write failed; the previous snapshot keeps serving and the next cron
+    // run retries.
+  }
+}
+
+async function loadReadingSnapshot(): Promise<SnapshotItem[] | null> {
+  const redis = getRedis();
+  if (!redis) return null;
+  try {
+    const items = await redis.get<SnapshotItem[]>(SNAPSHOT_KEY);
+    return Array.isArray(items) && items.length > 0 ? items : null;
+  } catch {
+    return null;
+  }
+}
+
+const MANUAL_FAVORITES: SnapshotItem[] = [
   {
     title: "Strategy as a Wicked Problem (Camillus, 2008)",
     url: "https://axveco.com/wp-content/uploads/2020/09/Strategy-as-a-Wicked-Problem-Camillus-2008.pdf",
-    date: "Sep 2008",
-    snippet: null,
-    highlights: [],
     tag: null,
     favorite: true,
   },
 ];
 
-export async function getHomeReading(): Promise<{ today: ReadingItem[]; favorites: ReadingItem[] }> {
-  const data = await fetchAllUserLinks();
-  if (!data) return { today: [], favorites: [...MANUAL_FAVORITES] };
-
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
-  const startMs = startOfDay.getTime();
-
-  const byDate = [...data.links].sort(
-    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-  );
-
-  const todayLinks = byDate.filter((i) => new Date(i.createdDate).getTime() >= startMs);
-  const favoriteLinks = byDate.filter((i) => i.favorite);
-
-  const [today, favorites] = await Promise.all([
-    applyTags(todayLinks, data.userId),
-    applyTags(favoriteLinks, data.userId),
-  ]);
-
-  const manualUrls = new Set(MANUAL_FAVORITES.map((m) => m.url));
-  const merged = [...MANUAL_FAVORITES, ...favorites.filter((f) => !manualUrls.has(f.url))];
-
-  return { today, favorites: merged };
-}
-
-export async function getAllLinksForClassification(
-  opts: FetchOpts = {}
-): Promise<Array<{ url: string; title: string; snippet: string | null }>> {
-  const data = await fetchAllUserLinks(opts);
-  if (!data) return [];
-  return data.links.map((l) => ({ url: l.link, title: l.title, snippet: l.snippet }));
-}
-
-export async function getAllReading(): Promise<ReadingItem[]> {
-  const data = await fetchAllUserLinks();
-  if (!data) return [];
-  const sorted = [...data.links].sort(
-    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-  );
-  return applyTags(sorted, data.userId);
-}
-
-// Slim wire type for the reading page. Snippets/highlights/dates are ~80% of
-// the raw data but never rendered, so they must not reach the client props —
-// they'd be serialized into the RSC payload and shipped on every page load.
-export type ReadingListItem = Pick<ReadingItem, "title" | "url" | "tag">;
-
 // Reading page: favorites (manual + flagged) pinned, plus the full read list.
+// Served from the Redis snapshot the cron maintains (one round trip); a live
+// Curius crawl (~8s of 2-3s API calls) is only the cold-start fallback.
 export async function getReadingPageData(): Promise<{
   favorites: ReadingListItem[];
   all: ReadingListItem[];
 }> {
-  const slim = ({ title, url, tag }: ReadingItem): ReadingListItem => ({ title, url, tag });
+  let items = await loadReadingSnapshot();
+  if (!items) {
+    const data = await fetchAllUserLinks();
+    if (data) {
+      items = await buildReadingSnapshot(data);
+      await saveReadingSnapshot(items);
+    }
+  }
 
-  const data = await fetchAllUserLinks();
-  if (!data) return { favorites: MANUAL_FAVORITES.map(slim), all: [] };
-
-  const sorted = [...data.links].sort(
-    (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-  );
-  const all = await applyTags(sorted, data.userId);
+  const slim = ({ title, url, tag }: SnapshotItem): ReadingListItem => ({ title, url, tag });
+  if (!items) return { favorites: MANUAL_FAVORITES.map(slim), all: [] };
 
   const manualUrls = new Set(MANUAL_FAVORITES.map((m) => m.url));
   const favorites = [
     ...MANUAL_FAVORITES,
-    ...all.filter((a) => a.favorite && !manualUrls.has(a.url)),
+    ...items.filter((i) => i.favorite && !manualUrls.has(i.url)),
   ];
 
-  return { favorites: favorites.map(slim), all: all.map(slim) };
+  return { favorites: favorites.map(slim), all: items.map(slim) };
 }
