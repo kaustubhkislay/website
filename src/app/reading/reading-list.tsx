@@ -19,7 +19,8 @@ export function ReadingList({
   favorites: ReadingListItem[];
 }) {
   const [query, setQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState("all");
+  // Multi-select: chips toggle independently; empty set = no filter ("all").
+  const [selectedTags, setSelectedTags] = useState<ReadonlySet<string>>(new Set());
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,9 +37,18 @@ export function ReadingList({
     }
   }
 
+  function toggleTag(tag: string) {
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
+  }
+
   const q = query.toLowerCase();
   const filtered = items.filter((item) => {
-    if (selectedTag !== "all" && item.tag !== selectedTag) return false;
+    if (selectedTags.size > 0 && (!item.tag || !selectedTags.has(item.tag))) return false;
     if (q && !item.title.toLowerCase().includes(q)) return false;
     return true;
   });
@@ -85,31 +95,32 @@ export function ReadingList({
         <div className="flex items-center gap-3 mb-6">
           <div className="flex gap-2 flex-nowrap overflow-x-auto flex-1 min-w-0">
             <button
-              onClick={() => setSelectedTag("all")}
+              onClick={() => setSelectedTags(new Set())}
+              aria-pressed={selectedTags.size === 0}
               className={`${chip} ${
-                selectedTag === "all"
+                selectedTags.size === 0
                   ? "border-text border-2 text-text"
                   : "border-border text-text-faint hover:text-text"
               }`}
             >
               all
             </button>
-            {Object.entries(TAG_CONFIG).map(([tag, config]) => (
-              <button
-                key={tag}
-                onClick={() => setSelectedTag(tag)}
-                className={`${chip} ${
-                  selectedTag === tag ? "border-2" : "border-border text-text-faint hover:text-text"
-                }`}
-                style={
-                  selectedTag === tag
-                    ? { borderColor: config.color, color: config.color }
-                    : undefined
-                }
-              >
-                {config.label}
-              </button>
-            ))}
+            {Object.entries(TAG_CONFIG).map(([tag, config]) => {
+              const active = selectedTags.has(tag);
+              return (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  aria-pressed={active}
+                  className={`${chip} ${
+                    active ? "border-2" : "border-border text-text-faint hover:text-text"
+                  }`}
+                  style={active ? { borderColor: config.color, color: config.color } : undefined}
+                >
+                  {config.label}
+                </button>
+              );
+            })}
           </div>
           <button
             onClick={toggleSearch}
