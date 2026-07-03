@@ -91,6 +91,22 @@ export function ReadingList({
     writeFiltersToUrl(next, query);
   }
 
+  // Highlights reveal on hover/focus of the quote marker and stay open while
+  // the cursor is anywhere in the row (so they can be read); tap still
+  // toggles for touch devices, where hover doesn't exist.
+  function expandHighlights(url: string) {
+    setExpanded((prev) => (prev.has(url) ? prev : new Set(prev).add(url)));
+  }
+
+  function collapseHighlights(url: string) {
+    setExpanded((prev) => {
+      if (!prev.has(url)) return prev;
+      const next = new Set(prev);
+      next.delete(url);
+      return next;
+    });
+  }
+
   function toggleExpanded(url: string) {
     setExpanded((prev) => {
       const next = new Set(prev);
@@ -224,7 +240,10 @@ export function ReadingList({
               const hasHighlights = (item.highlights?.length ?? 0) > 0;
               const isExpanded = expanded.has(item.url);
               return (
-                <li key={item.url}>
+                <li
+                  key={item.url}
+                  onMouseLeave={hasHighlights ? () => collapseHighlights(item.url) : undefined}
+                >
                   <div className="flex items-baseline gap-3">
                     <span
                       className="font-mono text-[11px] uppercase shrink-0 w-12 tabular-nums"
@@ -243,6 +262,9 @@ export function ReadingList({
                     {hasHighlights && (
                       <button
                         onClick={() => toggleExpanded(item.url)}
+                        onMouseEnter={() => expandHighlights(item.url)}
+                        onFocus={() => expandHighlights(item.url)}
+                        onBlur={() => collapseHighlights(item.url)}
                         aria-expanded={isExpanded}
                         aria-label={`${isExpanded ? "Hide" : "Show"} ${item.highlights!.length} highlight${item.highlights!.length === 1 ? "" : "s"}`}
                         className={`shrink-0 font-mono text-[11px] transition-colors active:translate-y-px ${
