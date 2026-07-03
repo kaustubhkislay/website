@@ -80,14 +80,14 @@ export default function WritingPage() {
         </ul>
       </section>
 
-      {/* Decorative closer, kin to the home page's sketch: right-aligned in
-          the column, rendered at half its 264x358 source for 2x sharpness. */}
-      <div className="mt-16 flex justify-end">
+      {/* Decorative closer, kin to the home page's sketch: centered at the
+          page bottom, well under half its 264x358 source for 2x+ sharpness. */}
+      <div className="mt-16 flex justify-center">
         <Image
           src="/penguin-prime.webp"
           alt=""
-          width={132}
-          height={179}
+          width={80}
+          height={108}
           className="select-none"
         />
       </div>
