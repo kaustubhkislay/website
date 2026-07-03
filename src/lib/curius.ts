@@ -6,7 +6,9 @@ const PAGE_BATCH = 4;
 // list — no need to fetch further batches just to find an empty page.
 const PAGE_SIZE = 25;
 const USER_ID_KEY = "curius:userId";
-const SNAPSHOT_KEY = "curius:snapshot";
+// Versioned: bump when SnapshotItem gains fields so stale-shaped snapshots
+// are rebuilt instead of served without the new data.
+const SNAPSHOT_KEY = "curius:snapshot:v2";
 
 interface CuriusLink {
   id: number;
@@ -20,16 +22,27 @@ interface CuriusLink {
   userIds: number[];
 }
 
-// Slim wire type for the reading page. Snippets/highlights/dates are ~80% of
-// the raw data but never rendered, so they must not reach the client props —
-// they'd be serialized into the RSC payload and shipped on every page load.
+// Slim wire type for the reading page. Snippets and dates are never rendered,
+// so they must not reach the client props — they'd be serialized into the RSC
+// payload and shipped on every page load. Highlights ARE rendered (expandable
+// per item), so they ride along, but only when non-empty.
 export type ReadingListItem = {
   title: string;
   url: string;
   tag: LinkTag | null;
+  highlights?: string[];
 };
 
-type SnapshotItem = ReadingListItem & { favorite: boolean };
+// date/highlights are optional so snapshots written before those fields
+// existed still deserialize cleanly until the next cron rebuild.
+export type SnapshotItem = {
+  title: string;
+  url: string;
+  tag: LinkTag | null;
+  favorite: boolean;
+  date?: string;
+  highlights?: string[];
+};
 
 type FetchOpts = { fresh?: boolean };
 
@@ -124,6 +137,11 @@ export async function buildReadingSnapshot(data: Crawl): Promise<SnapshotItem[]>
     url: l.link,
     tag: tagMap.get(l.link) ?? null,
     favorite: l.favorite,
+    date: l.createdDate,
+    highlights: l.highlights
+      .filter((h) => h.userId === data.userId)
+      .map((h) => h.highlight)
+      .filter(Boolean),
   }));
 }
 
@@ -158,23 +176,31 @@ const MANUAL_FAVORITES: SnapshotItem[] = [
   },
 ];
 
-// Reading page: favorites (manual + flagged) pinned, plus the full read list.
 // Served from the Redis snapshot the cron maintains (one round trip); a live
 // Curius crawl (~8s of 2-3s API calls) is only the cold-start fallback.
+export async function getReadingSnapshot(): Promise<SnapshotItem[] | null> {
+  const cached = await loadReadingSnapshot();
+  if (cached) return cached;
+
+  const data = await fetchAllUserLinks();
+  if (!data) return null;
+  const items = await buildReadingSnapshot(data);
+  await saveReadingSnapshot(items);
+  return items;
+}
+
+// Reading page: favorites (manual + flagged) pinned, plus the full read list.
 export async function getReadingPageData(): Promise<{
   favorites: ReadingListItem[];
   all: ReadingListItem[];
 }> {
-  let items = await loadReadingSnapshot();
-  if (!items) {
-    const data = await fetchAllUserLinks();
-    if (data) {
-      items = await buildReadingSnapshot(data);
-      await saveReadingSnapshot(items);
-    }
-  }
+  const items = await getReadingSnapshot();
 
-  const slim = ({ title, url, tag }: SnapshotItem): ReadingListItem => ({ title, url, tag });
+  const slim = (i: SnapshotItem): ReadingListItem => {
+    const out: ReadingListItem = { title: i.title, url: i.url, tag: i.tag };
+    if (i.highlights?.length) out.highlights = i.highlights;
+    return out;
+  };
   if (!items) return { favorites: MANUAL_FAVORITES.map(slim), all: [] };
 
   const manualUrls = new Set(MANUAL_FAVORITES.map((m) => m.url));
