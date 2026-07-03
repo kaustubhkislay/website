@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kaustubhais.com
 
-## Getting Started
+Personal website of Kaustubh Kislay. Next.js 16 (App Router) + React 19 +
+Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 
-First, run the development server:
+## Pages
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Route       | What it is                                                        |
+| ----------- | ----------------------------------------------------------------- |
+| `/`         | Bio, affiliations, friends webring. Fully static.                 |
+| `/writing`  | Featured posts (hardcoded in `src/app/writing/page.tsx`).         |
+| `/reading`  | Live mirror of my [Curius](https://curius.app/kaustubh-kislay) bookmarks, auto-tagged by an LLM, with multi-tag filtering, search, and expandable highlights. Filters sync to the URL (`?tags=research,culture&q=...`). |
+| `/feed.xml` | RSS feed of the reading list (latest 50 links).                   |
+
+## How the reading list works
+
+```
+Curius API ──crawl──> cron (/api/cron, every 5 min)
+                        ├─ classify uncached links (OpenRouter LLM) ──> Redis tag:<url>
+                        ├─ write render-ready snapshot ──────────────> Redis curius:snapshot
+                        └─ new links or tags? ── revalidatePath(/reading, /feed.xml)
+
+/reading, /feed.xml ── ISR (force-static, 1h) ── read curius:snapshot (1 round trip)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Design constraints worth knowing before touching this:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **The Curius API is slow** (2–4s per 25-link page), so nothing user-facing
+  ever crawls it. Pages regenerate from the Redis snapshot; a live crawl is
+  only the cold-start fallback when the snapshot key is missing.
+- **`force-static` on `/reading` and `/feed.xml` is load-bearing.** The
+  Upstash client issues `no-store` fetches, which would otherwise flip those
+  routes to dynamic rendering and put Redis on every request.
+- **Crawl failures return `null`, never a partial list** — a flaky Curius
+  response must not persist a truncated snapshot (`src/lib/curius.ts`).
+- **Classification is cached forever per URL** in Redis (`tag:<url>`).
+  `POST /api/reclassify` (Bearer `CRON_SECRET`) wipes and re-tags — body
+  `{"mode": "all" | "other" | "urls", "urls": [...]}`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+| Var                                                | Purpose                                     |
+| -------------------------------------------------- | ------------------------------------------- |
+| `KV_REST_API_URL` / `redis1_KV_REST_API_URL`       | Upstash Redis REST endpoint                 |
+| `KV_REST_API_TOKEN` / `redis1_KV_REST_API_TOKEN`   | Upstash Redis token                         |
+| `OPENROUTER_API_KEY`                               | LLM classification (`src/lib/classify.ts`)  |
+| `CRON_SECRET`                                      | Auths `/api/cron` and `/api/reclassify`     |
+| `REVALIDATE_TOKEN`                                 | Auths `POST /api/revalidate` (manual purge) |
 
-To learn more about Next.js, take a look at the following resources:
+Without Redis everything still renders — links just show untagged and every
+regeneration pays the full crawl. Without OpenRouter, new links stay untagged.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev     # local dev server
+npm run build   # production build (prerenders all pages)
+npm run lint
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploys happen automatically on push to `main` (Vercel). The cron schedule
+lives in `vercel.json`.
