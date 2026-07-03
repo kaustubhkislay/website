@@ -69,8 +69,9 @@ export async function POST(req: NextRequest) {
   // regenerates from pre-reclassification data.
   await saveReadingSnapshot(await buildReadingSnapshot(data));
 
-  // The home page doesn't render Curius data, so only /reading needs it.
+  // The home page doesn't render Curius data — only the snapshot readers.
   revalidatePath("/reading");
+  revalidatePath("/feed.xml");
 
   return NextResponse.json({
     requested: toReclassify.length,

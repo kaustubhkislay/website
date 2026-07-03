@@ -84,8 +84,9 @@ export async function GET(req: NextRequest) {
     }
 
     if (newContent || classified > 0) {
-      // The home page doesn't render Curius data, so only /reading needs it.
+      // The home page doesn't render Curius data — only the snapshot readers.
       revalidatePath("/reading");
+      revalidatePath("/feed.xml");
     }
 
     return NextResponse.json({
