@@ -1,11 +1,28 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { BASE_URL } from "./sitemap";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kaustubh Kislay",
-  description: "Personal website",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "Kaustubh Kislay",
+    template: "%s — Kaustubh Kislay",
+  },
+  description:
+    "AI safety researcher. Director of the Wisconsin AI Safety Initiative. Writing, and everything I read.",
+  openGraph: {
+    siteName: "Kaustubh Kislay",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  alternates: {
+    types: { "application/rss+xml": "/feed.xml" },
+  },
 };
 
 export default function RootLayout({

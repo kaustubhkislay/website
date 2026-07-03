@@ -9,7 +9,9 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Reading — Kaustubh Kislay",
+  title: "Reading",
+  description:
+    "Everything I read, auto-tagged by topic — AI safety research, policy, self-improvement, and culture.",
 };
 
 export default async function ReadingPage() {

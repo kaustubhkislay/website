@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Writing — Kaustubh Kislay",
+  title: "Writing",
+  description:
+    "Essays and research writing on AI safety, alignment, and adjacent topics — on LessWrong and Substack.",
 };
 
 const FEATURED: { title: string; href: string }[] = [
