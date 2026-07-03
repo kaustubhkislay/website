@@ -91,9 +91,9 @@ export function ReadingList({
     writeFiltersToUrl(next, query);
   }
 
-  // Highlights reveal on hover/focus of the quote marker and stay open while
-  // the cursor is anywhere in the row (so they can be read); tap still
-  // toggles for touch devices, where hover doesn't exist.
+  // Highlights reveal on hover/focus of the title and stay open while the
+  // cursor is anywhere in the row (so they can be read); they close when the
+  // cursor leaves the row.
   function expandHighlights(url: string) {
     setExpanded((prev) => (prev.has(url) ? prev : new Set(prev).add(url)));
   }
@@ -103,15 +103,6 @@ export function ReadingList({
       if (!prev.has(url)) return prev;
       const next = new Set(prev);
       next.delete(url);
-      return next;
-    });
-  }
-
-  function toggleExpanded(url: string) {
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(url)) next.delete(url);
-      else next.add(url);
       return next;
     });
   }
@@ -255,25 +246,13 @@ export function ReadingList({
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onMouseEnter={hasHighlights ? () => expandHighlights(item.url) : undefined}
+                      onFocus={hasHighlights ? () => expandHighlights(item.url) : undefined}
+                      onBlur={hasHighlights ? () => collapseHighlights(item.url) : undefined}
                       className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
                     >
                       {item.title}
                     </a>
-                    {hasHighlights && (
-                      <button
-                        onClick={() => toggleExpanded(item.url)}
-                        onMouseEnter={() => expandHighlights(item.url)}
-                        onFocus={() => expandHighlights(item.url)}
-                        onBlur={() => collapseHighlights(item.url)}
-                        aria-expanded={isExpanded}
-                        aria-label={`${isExpanded ? "Hide" : "Show"} ${item.highlights!.length} highlight${item.highlights!.length === 1 ? "" : "s"}`}
-                        className={`shrink-0 font-mono text-[11px] transition-colors active:translate-y-px ${
-                          isExpanded ? "text-accent" : "text-text-ghost hover:text-accent-hover"
-                        }`}
-                      >
-                        &#10077;{item.highlights!.length}
-                      </button>
-                    )}
                   </div>
                   {hasHighlights && isExpanded && (
                     <ul className="mt-2 mb-1 ml-[60px] space-y-2 border-l border-border-accent pl-4">
