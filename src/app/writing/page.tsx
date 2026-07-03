@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
   title: "Writing — Kaustubh Kislay",
@@ -78,6 +79,18 @@ export default function WritingPage() {
           ))}
         </ul>
       </section>
+
+      {/* Decorative closer, kin to the home page's sketch: right-aligned in
+          the column, rendered at half its 264x358 source for 2x sharpness. */}
+      <div className="mt-16 flex justify-end">
+        <Image
+          src="/penguin-prime.webp"
+          alt=""
+          width={132}
+          height={179}
+          className="select-none"
+        />
+      </div>
     </div>
   );
 }
