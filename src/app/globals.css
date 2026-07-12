@@ -1,5 +1,5 @@
 /* Hallmark · redesign · genre: editorial (brutalist voice) · macrostructure: Index/Hub (line-light)
- * tone: eco-brutalist · anchor hue: forest green + black over white
+ * tone: eco-brutalist · anchor hue: chili-pepper red + warm black over light sand
  * pre-emit critique: P5 H4 E4 S5 R5 V5
  * contrast: pass (46–50) · nav: hub links · footer: none · mobile: pass
  */
@@ -22,27 +22,27 @@
   --color-border-accent: var(--border-accent);
 }
 
-/* white · black · forest-green palette */
+/* light-sand · warm-black · chili-pepper palette */
 :root {
-  --bg: #ffffff;
-  --text: #0a0a0a;
-  --text-muted: #262626;
-  --text-faint: #525252;
-  --text-ghost: #8a8a8a;
-  --heading: #2f6b3a;
-  --accent: #2f6b3a;
-  --accent-hover: #1f4a26;
-  --border: #e5e5e5;
-  --border-accent: #b8d0ad;
-  /* reading-list tag hues — each ≥4.5:1 on white --bg */
-  --tag-research: #a23b2e;
-  --tag-policy: #2f7a42;
-  --tag-self: #2767a0;
-  --tag-culture: #856515;
+  --bg: #F4EDE3;
+  --text: #201812;
+  --text-muted: #362B22;
+  --text-faint: #5C4F42;
+  --text-ghost: #75655A;
+  --heading: #9B1B30;
+  --accent: #9B1B30;
+  --accent-hover: #7A1526;
+  --border: #E8DCCB;
+  --border-accent: #DECDBE;
+  /* reading-list tag hues — each ≥4.5:1 on light-sand --bg */
+  --tag-research: #9C4511;
+  --tag-policy: #2E6E3C;
+  --tag-self: #275F94;
+  --tag-culture: #7D5E10;
   --glow-opacity: 1;
   --glow-gradient: radial-gradient(
     ellipse 70% 45% at 50% 100%,
-    rgba(47, 107, 58, 0.05) 0%,
+    rgba(155, 27, 48, 0.05) 0%,
     transparent 70%
   );
 }
