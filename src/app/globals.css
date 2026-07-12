@@ -24,8 +24,6 @@
 
 /* deep-chili · warm-sand · sand-dollar palette (inverted) */
 :root {
-  /* dark page — keep UA-drawn surfaces (autofill, overlays) dark too */
-  color-scheme: dark;
   --bg: #9B1B30;
   --text: #FAF5EC;
   --text-muted: #EFE5D6;
