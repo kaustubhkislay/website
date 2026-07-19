@@ -53,10 +53,6 @@ export default function Home() {
             Kaustubh Kislay
           </h1>
           <ContactBar />
-          <blockquote className="mt-5 text-[14px] italic text-text-muted">
-            <p>&ldquo;We&rsquo;re all gonna make it brah&rdquo;</p>
-            <cite className="not-italic text-text-faint">— Aziz Shavershian</cite>
-          </blockquote>
         </div>
 
         <div className="mt-6 max-w-[60ch] space-y-6">
