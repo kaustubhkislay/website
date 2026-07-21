@@ -23,6 +23,7 @@ const FRIENDS: { label: string; href?: string }[] = [
   { label: "Anish" },
   { label: "Arya", href: "https://www.linkedin.com/in/arya-p-ai/" },
   { label: "Celeste", href: "https://wanyuli.com/" },
+  { label: "Coby", href: "https://coby.lk/" },
   { label: "Jeremy", href: "https://jeremykintana.com/" },
   { label: "Satya", href: "https://satchlj.com/" },
   { label: "Will", href: "https://wlanderson.com/" },
