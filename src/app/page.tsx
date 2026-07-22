@@ -62,6 +62,18 @@ export default function Home() {
             I am a researcher focused on making things better.
           </p>
           <p className="text-[15px] text-text-muted leading-relaxed">
+            I maintain{" "}
+            <a
+              href="https://aisopportunities.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+            >
+              AI Safety Opportunities
+            </a>
+            .
+          </p>
+          <p className="text-[15px] text-text-muted leading-relaxed">
             I{" "}
             <Link
               href="/writing"
@@ -76,18 +88,6 @@ export default function Home() {
             >
               read
             </Link>
-            .
-          </p>
-          <p className="text-[15px] text-text-muted leading-relaxed">
-            I maintain{" "}
-            <a
-              href="https://aisopportunities.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-            >
-              AI Safety Opportunities
-            </a>
             .
           </p>
         </div>
