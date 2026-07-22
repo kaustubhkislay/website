@@ -8,6 +8,10 @@ export const metadata = {
 
 const FEATURED: { title: string; href: string }[] = [
   {
+    title: "Your AIs don't do what you want. This is really bad",
+    href: "https://www.lesswrong.com/posts/NmwzGEAPamauYec3A/your-ais-don-t-do-what-you-want-this-is-really-bad",
+  },
+  {
     title: "Secret Loyalties Likely Raise Remote-Influenceability",
     href: "https://www.lesswrong.com/posts/YpAxXAcAFp4aFJRwf/secret-loyalties-likely-raise-remote-influenceability",
   },
