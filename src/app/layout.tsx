@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   },
   description:
     "AI safety researcher. Director of the Wisconsin AI Safety Initiative. Writing, and everything I read.",
+  authors: [{ name: "Kaustubh Kislay", url: BASE_URL }],
+  creator: "Kaustubh Kislay",
   openGraph: {
     siteName: "Kaustubh Kislay",
     type: "website",
@@ -19,10 +21,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    creator: "@kaustubhais",
+    site: "@kaustubhais",
   },
   alternates: {
+    canonical: "/",
     types: { "application/rss+xml": "/feed.xml" },
   },
+  // Set GOOGLE_SITE_VERIFICATION to emit the Search Console meta tag; omitted
+  // (no invalid tag) when unset — DNS/Vercel verification needs nothing here.
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export default function RootLayout({
@@ -46,6 +56,31 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Kaustubh Kislay",
+              url: BASE_URL,
+              jobTitle: "AI Safety Researcher",
+              affiliation: {
+                "@type": "Organization",
+                name: "Wisconsin AI Safety Initiative",
+                url: "https://waisi.org/",
+              },
+              sameAs: [
+                "https://github.com/kaustubhkislay",
+                "https://www.linkedin.com/in/kaustubh-kislay",
+                "https://x.com/kaustubhais",
+                "https://scholar.google.com/citations?user=3INpQ98AAAAJ&hl=en",
+                "https://www.lesswrong.com/users/kaustubh-kislay",
+                "https://substack.com/@kaustubhais",
+              ],
+            }),
+          }}
+        />
         {children}
         <Analytics />
         <SpeedInsights />

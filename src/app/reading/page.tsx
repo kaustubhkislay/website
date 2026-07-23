@@ -12,6 +12,8 @@ export const metadata = {
   title: "Reading",
   description:
     "Everything I read, auto-tagged by topic — AI safety research, policy, self-improvement, and culture.",
+  // Canonicalize the query-string filter variants (?tags=…&q=…) to the base page.
+  alternates: { canonical: "/reading" },
 };
 
 export default async function ReadingPage() {

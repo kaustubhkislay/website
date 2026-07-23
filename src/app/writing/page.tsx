@@ -4,6 +4,7 @@ export const metadata = {
   title: "Writing",
   description:
     "Essays and research writing on AI safety, alignment, and adjacent topics — on LessWrong and Substack.",
+  alternates: { canonical: "/writing" },
 };
 
 const FEATURED: { title: string; href: string }[] = [
