@@ -228,21 +228,9 @@ export function ReadingList({
               return (
                 <li key={item.url}>
                   <div className="flex items-baseline gap-3">
-                    <span
-                      className="font-mono text-[11px] uppercase shrink-0 w-12 tabular-nums"
-                      style={tagStyle ? { color: tagStyle.color } : undefined}
-                    >
-                      {tagStyle ? `[${tagStyle.short}]` : ""}
-                    </span>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
-                    >
-                      {item.title}
-                    </a>
-                    {hasHighlights && (
+                    {tagStyle && hasHighlights ? (
+                      // The tag prefix doubles as the notes toggle on rows
+                      // that have highlights.
                       <button
                         onClick={() => toggleHighlights(item.url)}
                         aria-expanded={isExpanded}
@@ -251,15 +239,29 @@ export function ReadingList({
                             ? "Hide notes"
                             : `Show notes (${item.highlights!.length})`
                         }
-                        className={`font-mono text-[10px] shrink-0 self-start transition-colors active:translate-y-px ${
-                          isExpanded
-                            ? "text-accent-hover"
-                            : "text-text-faint hover:text-accent-hover"
+                        className={`font-mono text-[11px] uppercase shrink-0 w-12 tabular-nums text-left cursor-pointer hover:underline underline-offset-2 active:translate-y-px ${
+                          isExpanded ? "underline" : ""
                         }`}
+                        style={{ color: tagStyle.color }}
                       >
-                        {item.highlights!.length}
+                        [{tagStyle.short}]
                       </button>
+                    ) : (
+                      <span
+                        className="font-mono text-[11px] uppercase shrink-0 w-12 tabular-nums"
+                        style={tagStyle ? { color: tagStyle.color } : undefined}
+                      >
+                        {tagStyle ? `[${tagStyle.short}]` : ""}
+                      </span>
                     )}
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[15px] font-medium transition-colors truncate text-text hover:text-accent-hover"
+                    >
+                      {item.title}
+                    </a>
                   </div>
                   {hasHighlights && isExpanded && (
                     <ul className="mt-2 mb-1 ml-[60px] space-y-2 border-l border-border-accent pl-4">
