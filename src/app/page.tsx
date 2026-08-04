@@ -100,7 +100,7 @@ export default function Home() {
               href="https://waisi.org/"
             />
             <Affiliation org="SPAR" role="Mentor, Researcher" />
-            <Affiliation org="UChicago XLab" role="Researcher" />
+            <Affiliation org="UChicago XLab" role="Writer, Researcher" />
             <Affiliation org="Algoverse AI Safety Fellowship" role="Researcher" />
           </ul>
         </Section>
