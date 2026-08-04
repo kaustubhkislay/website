@@ -20,7 +20,7 @@ const HIKIKOMORI: { label: string }[] = [
 const FRIENDS: { label: string; href?: string }[] = [
   { label: "Anaya", href: "https://total-anayalation.github.io/" },
   { label: "Andy", href: "https://yeedrag.github.io/" },
-  { label: "Anish" },
+  { label: "Anish", href: "https://amhw460.github.io/" },
   { label: "Arya", href: "https://www.linkedin.com/in/arya-p-ai/" },
   { label: "Celeste", href: "https://wanyuli.com/" },
   { label: "Coby", href: "https://coby.lk/" },
