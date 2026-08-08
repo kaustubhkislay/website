@@ -105,6 +105,11 @@ export default function Home() {
               href="https://sparai.org/"
             />
             <Affiliation
+              org="Kairos"
+              role="SWE Contractor"
+              href="https://kairos-project.org/"
+            />
+            <Affiliation
               org="Pathfinder"
               role="Mentor"
               href="https://pathfinder.kairos-project.org/"
