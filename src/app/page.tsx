@@ -99,10 +99,26 @@ export default function Home() {
               role="Director"
               href="https://waisi.org/"
             />
-            <Affiliation org="SPAR" role="Mentor, Researcher" />
-            <Affiliation org="Pathfinder" role="Mentor" />
-            <Affiliation org="UChicago XLab" role="Writer, Researcher" />
-            <Affiliation org="Algoverse AI Safety Fellowship" role="Researcher" />
+            <Affiliation
+              org="SPAR"
+              role="Mentor, Researcher"
+              href="https://sparai.org/"
+            />
+            <Affiliation
+              org="Pathfinder"
+              role="Mentor"
+              href="https://pathfinder.kairos-project.org/"
+            />
+            <Affiliation
+              org="UChicago XLab"
+              role="Writer, Researcher"
+              href="https://xrisk.uchicago.edu/"
+            />
+            <Affiliation
+              org="Algoverse AI Safety Fellowship"
+              role="Researcher"
+              href="https://algoverseairesearch.org/ai-safety-fellowship"
+            />
           </ul>
         </Section>
 
