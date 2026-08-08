@@ -59,9 +59,6 @@ export default function Home() {
         <div className="mt-6 max-w-[60ch] space-y-6">
         <div className="space-y-1">
           <p className="text-[15px] text-text-muted leading-relaxed">
-            I am a researcher focused on making things better.
-          </p>
-          <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
             <a
               href="https://aisopportunities.com/"
