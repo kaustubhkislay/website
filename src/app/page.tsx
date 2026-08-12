@@ -33,20 +33,21 @@ const FRIENDS: { label: string; href?: string }[] = [
 export default function Home() {
   return (
     <div className="mx-auto max-w-[640px] px-6 py-20 sm:py-28">
-      {/* Header + content are grouped so the decorative sketch can span from the
-          top of the header down to the top of the footer (the -bottom-12 offset
-          reaches across the nav's mt-12 gap). It sits in the whitespace to the
-          right of the body text, right-aligned to the column/footer edge, and
-          behind the text (-z-10) so words stay readable. Hidden on phones
-          (<640px, no room); shown from sm+ once the column hits max-width. */}
+      {/* Header + content are grouped so the decorative sketch can hang in the
+          whitespace to the right of the body text, right-aligned to the column
+          edge and behind the text (-z-10) so words stay readable. It is
+          bottom-anchored so its lower edge lines up with the bottom of the
+          friends section; the top lands around the contact bar. Hidden on
+          phones (<640px, no room); shown from sm+ once the column hits
+          max-width. */}
       <div className="relative">
-        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-72 sm:block">
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 -z-10 hidden w-72 sm:block">
           <Image
             src="/giorno-sketch.webp"
             alt=""
             fill
             sizes="288px"
-            className="select-none object-contain object-right"
+            className="select-none object-contain object-right-bottom"
           />
         </div>
 
