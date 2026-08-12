@@ -57,7 +57,7 @@ export default function Home() {
           <ContactBar />
         </div>
 
-        <div className="mt-6 max-w-[60ch] space-y-5">
+        <div className="mt-6 max-w-[60ch] space-y-4">
         <div className="space-y-1">
           <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
