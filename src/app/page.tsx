@@ -40,12 +40,12 @@ export default function Home() {
           behind the text (-z-10) so words stay readable. Hidden on phones
           (<640px, no room); shown from sm+ once the column hits max-width. */}
       <div className="relative">
-        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-80 sm:block">
+        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-72 sm:block">
           <Image
             src="/giorno-sketch.webp"
             alt=""
             fill
-            sizes="320px"
+            sizes="288px"
             className="select-none object-contain object-right"
           />
         </div>
@@ -57,7 +57,7 @@ export default function Home() {
           <ContactBar />
         </div>
 
-        <div className="mt-6 max-w-[60ch] space-y-6">
+        <div className="mt-6 max-w-[60ch] space-y-5">
         <div className="space-y-1">
           <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
