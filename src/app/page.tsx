@@ -59,7 +59,7 @@ export default function Home() {
         </div>
 
         <div className="mt-6 max-w-[60ch] space-y-2">
-        <div className="space-y-1">
+        <div className="space-y-2">
           <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
             <a
@@ -127,7 +127,7 @@ export default function Home() {
         </Section>
 
         <Section label="Free time">
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div>
               <p className="font-sans text-[11px] uppercase tracking-[0.16em] text-text-faint mb-2">
                 If touching grass
@@ -180,7 +180,7 @@ function Section({ label, children }: { label: ReactNode; children: ReactNode })
       <h2 className="font-sans text-xs uppercase tracking-[0.18em] text-heading">
         {label}
       </h2>
-      <div className="mt-3 pl-5">{children}</div>
+      <div className="mt-2 pl-5">{children}</div>
     </section>
   );
 }
