@@ -40,12 +40,12 @@ export default function Home() {
           behind the text (-z-10) so words stay readable. Hidden on phones
           (<640px, no room); shown from sm+ once the column hits max-width. */}
       <div className="relative">
-        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-72 sm:block">
+        <div className="pointer-events-none absolute right-0 top-0 -bottom-12 -z-10 hidden w-80 sm:block">
           <Image
             src="/giorno-sketch.webp"
             alt=""
             fill
-            sizes="288px"
+            sizes="320px"
             className="select-none object-contain object-right"
           />
         </div>
@@ -143,7 +143,10 @@ export default function Home() {
         </Section>
 
         <Section label="I have friends">
-          <InlineLinks items={FRIENDS} />
+          {/* Two balanced lines so the list never runs under the sketch on
+              the right. */}
+          <InlineLinks items={FRIENDS.slice(0, Math.ceil(FRIENDS.length / 2))} />
+          <InlineLinks items={FRIENDS.slice(Math.ceil(FRIENDS.length / 2))} />
         </Section>
         </div>
       </div>
