@@ -150,7 +150,7 @@ export default function Home() {
         </div>
       </div>
 
-      <nav className="mt-2 flex justify-between items-center">
+      <nav className="mt-12 flex justify-between items-center">
         <a
           href="https://wanyuli.com/"
           target="_blank"
