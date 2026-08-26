@@ -9,6 +9,10 @@ export const metadata = {
 
 const FEATURED: { title: string; href: string }[] = [
   {
+    title: "PSA: We can do better",
+    href: "https://www.lesswrong.com/posts/wiFv6LguphSxkzAnb/psa-we-can-do-better",
+  },
+  {
     title: "A Spillway for Agent Coordination",
     href: "https://www.lesswrong.com/posts/FjYmTAPiG3FCFCY5r/a-spillway-for-agent-coordination",
   },
