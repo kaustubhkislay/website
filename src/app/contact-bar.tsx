@@ -10,7 +10,7 @@ export function ContactBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       <div className="flex items-center gap-4">
         <a
           href="https://github.com/kaustubhkislay"

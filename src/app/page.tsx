@@ -58,8 +58,7 @@ export default function Home() {
           <ContactBar />
         </div>
 
-        <div className="mt-6 max-w-[60ch] space-y-2">
-        <div className="space-y-2">
+        <div className="mt-2 max-w-[60ch] space-y-2">
           <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
             <a
@@ -89,7 +88,6 @@ export default function Home() {
             </Link>
             .
           </p>
-        </div>
 
         <Section label="Affiliations, past and present">
           <ul className="space-y-2">
@@ -152,7 +150,7 @@ export default function Home() {
         </div>
       </div>
 
-      <nav className="mt-12 flex justify-between items-center">
+      <nav className="mt-2 flex justify-between items-center">
         <a
           href="https://wanyuli.com/"
           target="_blank"
