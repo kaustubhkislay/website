@@ -57,9 +57,9 @@ async function fetchNeighbours(): Promise<Neighbours> {
   }
 }
 
-const NAV = "text-sm text-text hover:text-text-faint transition-colors";
-const META =
-  "font-sans text-[11px] uppercase tracking-[0.18em] text-text-faint hover:text-accent-hover transition-colors";
+// Same size and color as the body paragraphs (text-[15px] text-text-muted).
+const NAV = "text-[15px] leading-relaxed text-text-muted hover:text-accent-hover transition-colors";
+const META = NAV;
 
 export async function Webring() {
   const { prev, next } = await fetchNeighbours();
@@ -70,7 +70,7 @@ export async function Webring() {
           next names differ in width. */}
       <nav
         aria-label="waisi.live webring"
-        className="grid grid-cols-[1fr_auto_1fr] items-center gap-3"
+        className="grid grid-cols-[1fr_auto_1fr] items-baseline gap-3 text-[15px] leading-relaxed text-text-muted"
       >
         <span className="justify-self-start">
           {prev && (
@@ -79,7 +79,7 @@ export async function Webring() {
             </a>
           )}
         </span>
-        <span className="justify-self-center flex items-center gap-2 whitespace-nowrap">
+        <span className="justify-self-center flex items-baseline gap-2 whitespace-nowrap">
           <a
             href={`${RING_URL}/random?from=${SLUG}`}
             className={META}
