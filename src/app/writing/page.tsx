@@ -36,7 +36,7 @@ const FEATURED: { title: string; href: string }[] = [
 
 export default function WritingPage() {
   return (
-    <div className="mx-auto max-w-[640px] px-6 py-16">
+    <div className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
       <Link
         href="/"
         className="font-sans text-[11px] uppercase tracking-[0.18em] text-text hover:text-text-faint transition-colors"

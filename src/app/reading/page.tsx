@@ -20,7 +20,7 @@ export default async function ReadingPage() {
   const { favorites, all } = await getReadingPageData();
 
   return (
-    <div className="mx-auto max-w-[640px] px-6 py-16">
+    <div className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
       <ReadingList items={all} favorites={favorites} />
     </div>
   );

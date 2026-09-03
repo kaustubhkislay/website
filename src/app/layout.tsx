@@ -84,14 +84,19 @@ export default function RootLayout({
         {children}
         {/* waisi.live webring. The health checker does a substring search of
             the served HTML for "https://waisi.live/embed/kaustubh", so the src
-            must stay a literal string here — never assembled at runtime. The
-            query params restyle the widget to the sand/chili palette (the
-            iframe inherits nothing from our CSS). */}
+            must stay a literal string here — never assembled at runtime.
+            The iframe inherits nothing from our CSS, so the query params carry
+            the palette: faint text, chili links, rl-limo (falls back to the
+            system sans until the ring's member YAML loads the Typekit kit).
+            The widget's own rounded border is made transparent and replaced
+            by a square hairline on the iframe element, matching the site's
+            chips. Pages end with pb-12 so the gap above the bar is a uniform
+            48px on every route. */}
         <footer className="mx-auto max-w-[640px] px-6 pb-12">
           <iframe
-            src="https://waisi.live/embed/kaustubh?text_color=%23201812&link_color=%239B1B30&border_color=%23DECDBE&font=ui-sans-serif,system-ui,sans-serif&font_size=13px"
+            src="https://waisi.live/embed/kaustubh?text_color=%235C4F42&link_color=%239B1B30&border_color=transparent&font=rl-limo,ui-sans-serif,system-ui,sans-serif&font_size=13px"
             title="waisi.live webring"
-            style={{ width: "100%", height: 44, border: 0 }}
+            className="box-border block h-11 w-full border border-border"
             loading="lazy"
           />
         </footer>

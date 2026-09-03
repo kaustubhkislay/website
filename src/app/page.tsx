@@ -32,7 +32,7 @@ const FRIENDS: { label: string; href?: string }[] = [
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-[640px] px-6 py-20 sm:py-28">
+    <div className="mx-auto max-w-[640px] px-6 pt-20 pb-12 sm:pt-28">
       {/* Header + content are grouped so the decorative sketch can hang in the
           whitespace to the right of the body text, right-aligned to the column
           edge and behind the text (-z-10) so words stay readable. It is
