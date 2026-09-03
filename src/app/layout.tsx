@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BASE_URL } from "./sitemap";
+import { Webring } from "./webring";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -82,23 +83,9 @@ export default function RootLayout({
           }}
         />
         {children}
-        {/* waisi.live webring. The health checker does a substring search of
-            the served HTML for "https://waisi.live/embed/kaustubh", so the src
-            must stay a literal string here — never assembled at runtime.
-            The iframe inherits nothing from our CSS, so the query params carry
-            the palette: faint text, chili links, rl-limo (falls back to the
-            system sans until the ring's member YAML loads the Typekit kit).
-            The widget's own rounded border is made transparent so the bar
-            sits on the page with no outline. Pages end with pb-12 so the gap
-            above the bar is a uniform 48px on every route. */}
-        <footer className="mx-auto max-w-[640px] px-6 pb-12">
-          <iframe
-            src="https://waisi.live/embed/kaustubh?text_color=%235C4F42&link_color=%239B1B30&border_color=transparent&font=rl-limo,ui-sans-serif,system-ui,sans-serif&font_size=13px"
-            title="waisi.live webring"
-            className="block h-11 w-full border-0"
-            loading="lazy"
-          />
-        </footer>
+        {/* Pages end with pb-12 so the gap above the bar is a uniform 48px
+            on every route. See webring.tsx for the checker constraint. */}
+        <Webring />
         <Analytics />
         <SpeedInsights />
       </body>
