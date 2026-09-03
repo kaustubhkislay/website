@@ -86,7 +86,7 @@ export async function Webring() {
           >
             rand
           </a>
-          <span className="text-border-accent" aria-hidden="true">|</span>
+          <span className="text-text-faint" aria-hidden="true">/</span>
           <a href={RING_URL} className={META}>
             waisi.live
           </a>
