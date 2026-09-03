@@ -82,6 +82,19 @@ export default function RootLayout({
           }}
         />
         {children}
+        {/* waisi.live webring. The health checker does a substring search of
+            the served HTML for "https://waisi.live/embed/kaustubh", so the src
+            must stay a literal string here — never assembled at runtime. The
+            query params restyle the widget to the sand/chili palette (the
+            iframe inherits nothing from our CSS). */}
+        <footer className="mx-auto max-w-[640px] px-6 pb-12">
+          <iframe
+            src="https://waisi.live/embed/kaustubh?text_color=%23201812&link_color=%239B1B30&border_color=%23DECDBE&font=ui-sans-serif,system-ui,sans-serif&font_size=13px"
+            title="waisi.live webring"
+            style={{ width: "100%", height: 44, border: 0 }}
+            loading="lazy"
+          />
+        </footer>
         <Analytics />
         <SpeedInsights />
       </body>

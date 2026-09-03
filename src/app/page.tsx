@@ -149,25 +149,6 @@ export default function Home() {
         </Section>
         </div>
       </div>
-
-      <nav className="mt-12 flex justify-between items-center">
-        <a
-          href="https://wanyuli.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-text hover:text-text-faint transition-colors"
-        >
-          <span className="font-bold">{"<"}</span> Celeste
-        </a>
-        <a
-          href="https://www.wlanderson.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-text hover:text-text-faint transition-colors"
-        >
-          Will <span className="font-bold">{">"}</span>
-        </a>
-      </nav>
     </div>
   );
 }
