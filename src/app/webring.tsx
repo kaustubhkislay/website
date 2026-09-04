@@ -79,14 +79,7 @@ export async function Webring() {
             </a>
           )}
         </span>
-        <span className="justify-self-center flex items-baseline gap-2 whitespace-nowrap">
-          <a
-            href={`${RING_URL}/random?from=${SLUG}`}
-            className={META}
-          >
-            rand
-          </a>
-          <span className="text-text-faint" aria-hidden="true">/</span>
+        <span className="justify-self-center whitespace-nowrap">
           <a href={RING_URL} className={META}>
             waisi.live
           </a>
