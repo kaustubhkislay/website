@@ -29,9 +29,9 @@
   --text-muted: #4F4F4F;
   --text-faint: #6E6E6E;
   --text-ghost: #8C8C8C;
-  --heading: #123524;
-  --accent: #123524;
-  --accent-hover: #1E5A3C;
+  --heading: #0E6B44;
+  --accent: #0E6B44;
+  --accent-hover: #0A4F32;
   --border: #E6E6E6;
   --border-accent: #D4D4D4;
   /* reading-list tag hues — each ≥4.5:1 on white --bg */
@@ -42,7 +42,7 @@
   --glow-opacity: 1;
   --glow-gradient: radial-gradient(
     ellipse 70% 45% at 50% 100%,
-    rgba(18, 53, 36, 0.05) 0%,
+    rgba(14, 107, 68, 0.07) 0%,
     transparent 70%
   );
 }

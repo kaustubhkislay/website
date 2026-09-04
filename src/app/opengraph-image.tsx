@@ -21,7 +21,7 @@ export default function OpenGraphImage() {
           padding: 88,
         }}
       >
-        <div style={{ display: "flex", width: 128, height: 12, background: "#123524" }} />
+        <div style={{ display: "flex", width: 128, height: 12, background: "#0E6B44" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
@@ -37,7 +37,7 @@ export default function OpenGraphImage() {
             research · writing · reading
           </div>
         </div>
-        <div style={{ fontSize: 26, color: "#123524", display: "flex" }}>kaustubhais.com</div>
+        <div style={{ fontSize: 26, color: "#0E6B44", display: "flex" }}>kaustubhais.com</div>
       </div>
     ),
     size
