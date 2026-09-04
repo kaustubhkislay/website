@@ -1,5 +1,5 @@
 /* Hallmark · redesign · genre: editorial (brutalist voice) · macrostructure: Index/Hub (line-light)
- * tone: eco-brutalist · anchor hue: chili-pepper red + warm black over light sand
+ * tone: eco-brutalist · anchor hue: phthalo green + grey over white
  * pre-emit critique: P5 H4 E4 S5 R5 V5
  * contrast: pass (46–50) · nav: hub links · footer: none · mobile: pass
  */
@@ -22,19 +22,19 @@
   --color-border-accent: var(--border-accent);
 }
 
-/* light-sand · warm-black · chili-pepper palette */
+/* white · grey · phthalo-green palette */
 :root {
-  --bg: #F4EDE3;
-  --text: #201812;
-  --text-muted: #362B22;
-  --text-faint: #5C4F42;
-  --text-ghost: #75655A;
-  --heading: #9B1B30;
-  --accent: #9B1B30;
-  --accent-hover: #7A1526;
-  --border: #E8DCCB;
-  --border-accent: #DECDBE;
-  /* reading-list tag hues — each ≥4.5:1 on light-sand --bg */
+  --bg: #FFFFFF;
+  --text: #3A3A3A;
+  --text-muted: #4F4F4F;
+  --text-faint: #6E6E6E;
+  --text-ghost: #8C8C8C;
+  --heading: #123524;
+  --accent: #123524;
+  --accent-hover: #1E5A3C;
+  --border: #E6E6E6;
+  --border-accent: #D4D4D4;
+  /* reading-list tag hues — each ≥4.5:1 on white --bg */
   --tag-research: #9C4511;
   --tag-policy: #2E6E3C;
   --tag-self: #275F94;
@@ -42,7 +42,7 @@
   --glow-opacity: 1;
   --glow-gradient: radial-gradient(
     ellipse 70% 45% at 50% 100%,
-    rgba(155, 27, 48, 0.05) 0%,
+    rgba(18, 53, 36, 0.05) 0%,
     transparent 70%
   );
 }
