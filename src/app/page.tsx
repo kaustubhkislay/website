@@ -43,7 +43,7 @@ export default function Home() {
       <div className="relative">
         <div className="pointer-events-none absolute right-0 top-0 bottom-0 -z-10 hidden w-72 sm:block">
           <Image
-            src="/giorno-sketch.webp"
+            src="/giorno-sketch-transparent.webp"
             alt=""
             fill
             sizes="288px"
@@ -100,6 +100,11 @@ export default function Home() {
               org="SPAR"
               role="Mentor, Researcher"
               href="https://sparai.org/"
+            />
+            <Affiliation
+              org="Bluedot"
+              role="Contractor"
+              href="https://bluedot.org/"
             />
             <Affiliation
               org="Kairos"
