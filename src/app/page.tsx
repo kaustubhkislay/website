@@ -98,7 +98,7 @@ export default function Home() {
             />
             <Affiliation
               org="AI Safety Said Simply"
-              role="co-founder"
+              role="Co-Founder"
               href="https://www.aisafetysaidsimply.com/"
             />
             <Affiliation
