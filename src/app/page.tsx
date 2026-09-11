@@ -97,6 +97,11 @@ export default function Home() {
               href="https://waisi.org/"
             />
             <Affiliation
+              org="AI Safety Said Simply"
+              role="co-founder"
+              href="https://www.aisafetysaidsimply.com/"
+            />
+            <Affiliation
               org="SPAR"
               role="Mentor, Researcher"
               href="https://sparai.org/"
@@ -120,11 +125,6 @@ export default function Home() {
               org="UChicago XLab"
               role="Writer, Researcher"
               href="https://xrisk.uchicago.edu/"
-            />
-            <Affiliation
-              org="Algoverse AI Safety Fellowship"
-              role="Researcher"
-              href="https://algoverseairesearch.org/ai-safety-fellowship"
             />
           </ul>
         </Section>
