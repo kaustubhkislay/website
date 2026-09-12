@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ContactBar } from "./contact-bar";
+import { RevealQuote } from "./reveal-quote";
+
+// Temporarily hide affiliations; set to true to restore the section.
+const SHOW_AFFILIATIONS = false;
 
 const TOUCHING_GRASS: { label: string }[] = [
   { label: "Basketball" },
@@ -17,18 +21,18 @@ const HIKIKOMORI: { label: string }[] = [
   { label: "Manga/Manhwa/Anime" },
 ];
 
-const FRIENDS: { label: string; href?: string }[] = [
-  { label: "Anaya", href: "https://total-anayalation.github.io/" },
-  { label: "Andy", href: "https://yeedrag.github.io/" },
-  { label: "Anish", href: "https://amhw460.github.io/" },
-  { label: "Arya", href: "https://www.linkedin.com/in/arya-p-ai/" },
-  { label: "Celeste", href: "https://wanyuli.com/" },
-  { label: "Christine", href: "https://christinecorry.com/index.html" },
-  { label: "Coby", href: "https://coby.lk/" },
-  { label: "Harshul", href: "https://harshul.org/" },
-  { label: "Jeremy", href: "https://jeremykintana.com/" },
-  { label: "Satya", href: "https://satchlj.com/" },
-  { label: "Will", href: "https://wlanderson.com/" },
+const FRIENDS: { label: string; href?: string; nickname?: string }[] = [
+  { label: "Anaya", nickname: "lation", href: "https://total-anayalation.github.io/" },
+  { label: "Andy", nickname: "Big A", href: "https://yeedrag.github.io/" },
+  { label: "Anish", nickname: "niche", href: "https://amhw460.github.io/" },
+  { label: "Arya", nickname: "Big A^1", href: "https://www.linkedin.com/in/arya-p-ai/" },
+  { label: "Celeste", nickname: "Boss", href: "https://wanyuli.com/" },
+  { label: "Christine", nickname: "Carry", href: "https://christinecorry.com/index.html" },
+  { label: "Coby", nickname: "KASSNER", href: "https://coby.lk/" },
+  { label: "Harshul", nickname: "balkava", href: "https://harshul.org/" },
+  { label: "Jeremy", nickname: "J-space", href: "https://jeremykintana.com/" },
+  { label: "Satya", nickname: "Big S", href: "https://satchlj.com/" },
+  { label: "Will", nickname: "Panda", href: "https://wlanderson.com/" },
 ];
 
 export default function Home() {
@@ -57,9 +61,16 @@ export default function Home() {
             Kaustubh Kislay
           </h1>
           <ContactBar />
+          <figure className="mt-4 sm:mr-[19rem]">
+            <RevealQuote />
+          </figure>
         </div>
 
-        <div className="mt-2 max-w-[60ch] space-y-2">
+        <div className="mt-4 flex max-w-[60ch] flex-col gap-4">
+          <div className="space-y-2">
+          <p className="text-[15px] text-text-muted leading-relaxed">
+            I&apos;m trying to make AI go well.
+          </p>
           <p className="text-[15px] text-text-muted leading-relaxed">
             I maintain{" "}
             <a
@@ -89,7 +100,9 @@ export default function Home() {
             </Link>
             .
           </p>
+          </div>
 
+        {SHOW_AFFILIATIONS && (
         <Section label="Affiliations, past and present">
           <ul className="space-y-2">
             <Affiliation
@@ -129,6 +142,7 @@ export default function Home() {
             />
           </ul>
         </Section>
+        )}
 
         <Section label="Free time">
           <div className="space-y-2">
@@ -199,7 +213,7 @@ function Affiliation({
   );
 }
 
-function InlineLinks({ items }: { items: { label: string; href?: string }[] }) {
+function InlineLinks({ items }: { items: { label: string; href?: string; nickname?: string }[] }) {
   return (
     <p className="text-[15px] leading-relaxed text-text-muted">
       {items.map((it, i) => (
@@ -208,11 +222,23 @@ function InlineLinks({ items }: { items: { label: string; href?: string }[] }) {
           {it.href ? (
             <a
               href={it.href}
+              aria-describedby={it.nickname ? `nickname-${it.label}` : undefined}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-text underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+              className="group relative inline-block text-text underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
             >
               {it.label}
+              {it.nickname && (
+                <span
+                  id={`nickname-${it.label}`}
+                  role="tooltip"
+                  className="pointer-events-none absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  <span className="block whitespace-nowrap border border-border bg-bg px-2 py-1 text-xs font-normal not-italic text-text shadow-sm">
+                    {it.nickname}
+                  </span>
+                </span>
+              )}
             </a>
           ) : (
             <span>{it.label}</span>
