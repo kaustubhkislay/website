@@ -165,7 +165,7 @@ export default function Home() {
           {/* Two balanced lines so the list never runs under the sketch on
               the right. */}
           <InlineLinks items={FRIENDS.slice(0, Math.ceil(FRIENDS.length / 2))} />
-          <InlineLinks items={FRIENDS.slice(Math.ceil(FRIENDS.length / 2))} />
+          <InlineLinks items={FRIENDS.slice(Math.ceil(FRIENDS.length / 2))} tooltipPosition="below" />
         </Section>
         </div>
       </div>
@@ -213,7 +213,10 @@ function Affiliation({
   );
 }
 
-function InlineLinks({ items }: { items: { label: string; href?: string; nickname?: string }[] }) {
+function InlineLinks({ items, tooltipPosition = "above" }: {
+  items: { label: string; href?: string; nickname?: string }[];
+  tooltipPosition?: "above" | "below";
+}) {
   return (
     <p className="text-[15px] leading-relaxed text-text-muted">
       {items.map((it, i) => (
@@ -232,7 +235,7 @@ function InlineLinks({ items }: { items: { label: string; href?: string; nicknam
                 <span
                   id={`nickname-${it.label}`}
                   role="tooltip"
-                  className="pointer-events-none absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className={`pointer-events-none absolute left-1/2 z-20 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 ${tooltipPosition === "below" ? "top-full pt-2" : "bottom-full pb-2"}`}
                 >
                   <span className="block whitespace-nowrap border border-border bg-bg px-2 py-1 text-xs font-normal not-italic text-text shadow-sm">
                     {it.nickname}
