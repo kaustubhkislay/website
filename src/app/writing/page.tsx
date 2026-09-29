@@ -9,6 +9,10 @@ export const metadata = {
 
 const FEATURED: { title: string; href: string }[] = [
   {
+    title: "How to Approach a One-on-One (to Get a Job)",
+    href: "https://kaustubhkislay.substack.com/p/how-to-approach-a-one-on-one-to-get",
+  },
+  {
     title: "PSA: We can do better",
     href: "https://www.lesswrong.com/posts/wiFv6LguphSxkzAnb/psa-we-can-do-better",
   },
