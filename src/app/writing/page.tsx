@@ -72,12 +72,12 @@ export default function WritingPage() {
         </a>
         <span className="text-border-accent"> | </span>
         <a
-          href="https://scholar.google.com/citations?user=3INpQ98AAAAJ&hl=en"
+          href="https://arxiv.org/search/cs?query=Kislay,+Kaustubh&searchtype=author&abstracts=show&order=-announced_date_first&size=50"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-accent-hover transition-colors"
         >
-          G-Scholar
+          arXiv
         </a>
       </p>
 
