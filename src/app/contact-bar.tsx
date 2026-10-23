@@ -1,13 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const EMAIL = "kaustubh[dot]kislay[at]gmail[dot]com";
+const EMAIL = "kaustubh.kislay@gmail.com";
 
 const ICON = "text-text-faint hover:text-accent-hover transition-colors";
 
 export function ContactBar() {
-  const [open, setOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+
+  useEffect(() => {
+    if (copyStatus === "idle") return;
+    const timeout = setTimeout(() => setCopyStatus("idle"), 2000);
+    return () => clearTimeout(timeout);
+  }, [copyStatus]);
+
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    }
+  }
 
   return (
     <div className="mt-2">
@@ -45,36 +60,24 @@ export function ContactBar() {
             <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
           </svg>
         </a>
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Hide email" : "Show email"}
-          aria-expanded={open}
-          className={`${ICON} active:translate-y-px`}
-        >
-          <svg viewBox="2 2 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Zm0 2v.4l8 5 8-5V6H4Zm16 2.75-7.47 4.67a1 1 0 0 1-1.06 0L4 8.75V18h16V8.75Z" />
-          </svg>
-        </button>
-        <div
-          className={`hidden transition-[grid-template-columns,opacity] duration-300 ease-out sm:grid ${
-            open ? "grid-cols-[1fr] opacity-100" : "grid-cols-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden">
-            <span className="select-all whitespace-nowrap text-sm text-text-faint">{EMAIL}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile (<sm): email drops vertically beneath the icons */}
-      <div
-        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out sm:hidden ${
-          open ? "mt-2 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <span className="select-all break-all text-sm text-text-faint">{EMAIL}</span>
+        <div className="relative flex">
+          <button
+            type="button"
+            onClick={copyEmail}
+            aria-label="Copy email address"
+            title="Copy email address"
+            className={`${ICON} active:translate-y-px`}
+          >
+            <svg viewBox="2 2 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Zm0 2v.4l8 5 8-5V6H4Zm16 2.75-7.47 4.67a1 1 0 0 1-1.06 0L4 8.75V18h16V8.75Z" />
+            </svg>
+          </button>
+          <span
+            role="status"
+            className={`pointer-events-none absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 whitespace-nowrap border border-border bg-bg px-2 py-1 text-xs text-text shadow-sm ${copyStatus === "idle" ? "opacity-0" : "opacity-100"}`}
+          >
+            {copyStatus === "copied" ? "Copied!" : copyStatus === "error" ? "Could not copy. Try again." : ""}
+          </span>
         </div>
       </div>
     </div>
