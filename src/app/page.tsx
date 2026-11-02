@@ -72,18 +72,6 @@ export default function Home() {
             I&apos;m trying to make AI go well.
           </p>
           <p className="text-[15px] text-text-muted leading-relaxed">
-            I maintain{" "}
-            <a
-              href="https://aisopportunities.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-            >
-              AI Safety Opportunities
-            </a>
-            .
-          </p>
-          <p className="text-[15px] text-text-muted leading-relaxed">
             I{" "}
             <Link
               href="/writing"
