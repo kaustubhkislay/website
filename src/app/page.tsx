@@ -99,9 +99,9 @@ export default function Home() {
               href="https://waisi.org/"
             />
             <Affiliation
-              org="AI Safety Said Simply"
+              org="AI Said Simply"
               role="Co-Founder"
-              href="https://www.aisafetysaidsimply.com/"
+              href="https://aisaidsimply.com/"
             />
             <Affiliation
               org="SPAR"
