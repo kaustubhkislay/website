@@ -76,7 +76,6 @@ export default function RootLayout({
                 "https://www.linkedin.com/in/kaustubh-kislay",
                 "https://x.com/kaustubhais",
                 "https://scholar.google.com/citations?user=3INpQ98AAAAJ&hl=en",
-                "https://www.lesswrong.com/users/kaustubh-kislay",
                 "https://substack.com/@kaustubhais",
               ],
             }),
