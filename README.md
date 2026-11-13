@@ -7,7 +7,7 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 
 | Route       | What it is                                                        |
 | ----------- | ----------------------------------------------------------------- |
-| `/`         | Bio, affiliations, friends webring. Fully static.                 |
+| `/`         | Bio, contact links, writing/reading navigation, and shared webring. |
 | `/writing`  | Featured posts (hardcoded in `src/app/writing/page.tsx`).         |
 | `/reading`  | Live mirror of my [Curius](https://curius.app/kaustubh-kislay) bookmarks, auto-tagged by an LLM, with multi-tag filtering, search, and expandable highlights. Filters sync to the URL (`?tags=research,culture&q=...`). |
 | `/feed.xml` | RSS feed of the reading list (latest 50 links).                   |

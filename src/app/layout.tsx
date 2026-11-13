@@ -82,10 +82,12 @@ export default function RootLayout({
             }),
           }}
         />
-        {children}
-        {/* Pages end with pb-12 so the gap above the bar is a uniform 48px
-            on every route. See webring.tsx for the checker constraint. */}
-        <Webring />
+        <div className="site-content">
+          {children}
+          {/* Pages end with pb-12 so the gap above the bar is a uniform 48px
+              on every route. See webring.tsx for the checker constraint. */}
+          <Webring />
+        </div>
         <Analytics />
         <SpeedInsights />
       </body>
