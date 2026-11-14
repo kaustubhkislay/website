@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s — Kaustubh Kislay",
   },
   description:
-    "AI safety researcher. Director of the Wisconsin AI Safety Initiative. Writing, and everything I read.",
+    "AI safety researcher. Director of the Wisconsin AI Safety Initiative. Research and writing.",
   authors: [{ name: "Kaustubh Kislay", url: BASE_URL }],
   creator: "Kaustubh Kislay",
   openGraph: {
@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
-    types: { "application/rss+xml": "/feed.xml" },
   },
   // Set GOOGLE_SITE_VERIFICATION to emit the Search Console meta tag; omitted
   // (no invalid tag) when unset — DNS/Vercel verification needs nothing here.

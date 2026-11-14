@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Auth-gated cron/reclassify/revalidate endpoints — no SEO value.
+      // The authenticated cache-refresh endpoint has no SEO value.
       disallow: "/api/",
     },
     sitemap: `${BASE_URL}/sitemap.xml`,

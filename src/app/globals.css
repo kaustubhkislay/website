@@ -34,11 +34,6 @@
   --accent-hover: #0A4F32;
   --border: #E6E6E6;
   --border-accent: #D4D4D4;
-  /* reading-list tag hues — each ≥4.5:1 on white --bg */
-  --tag-research: #9C4511;
-  --tag-policy: #2E6E3C;
-  --tag-self: #275F94;
-  --tag-culture: #7D5E10;
   --glow-opacity: 1;
   --glow-gradient: radial-gradient(
     ellipse 70% 45% at 50% 100%,

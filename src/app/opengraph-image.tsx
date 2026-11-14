@@ -34,7 +34,7 @@ export default function OpenGraphImage() {
             Kaustubh Kislay
           </div>
           <div style={{ fontSize: 32, color: "#5C4F42", marginTop: 20, display: "flex" }}>
-            research · writing · reading
+            research · writing
           </div>
         </div>
         <div style={{ fontSize: 26, color: "#0E6B44", display: "flex" }}>kaustubhais.com</div>

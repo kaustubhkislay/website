@@ -27,13 +27,6 @@ export default function Home() {
                 className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
               >
                 write
-              </Link>{" "}
-              and I{" "}
-              <Link
-                href="/reading"
-                className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-              >
-                read
               </Link>
               .
             </p>

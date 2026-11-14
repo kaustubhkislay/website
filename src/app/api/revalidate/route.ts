@@ -9,6 +9,6 @@ export async function POST(req: NextRequest) {
   }
 
   revalidatePath("/");
-  revalidatePath("/reading");
+  revalidatePath("/writing");
   return NextResponse.json({ revalidated: true });
 }
