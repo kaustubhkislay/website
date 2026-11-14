@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { ContactBar } from "./contact-bar";
 
 // Temporarily hide affiliations; set to true to restore the section.
@@ -16,21 +15,9 @@ export default function Home() {
           </h1>
           <ContactBar />
 
-          <div className="mt-4 space-y-2">
-            <p className="text-[15px] text-text-muted leading-relaxed">
-              I&apos;m trying to make AI go well.
-            </p>
-            <p className="text-[15px] text-text-muted leading-relaxed">
-              I{" "}
-              <Link
-                href="/writing"
-                className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-              >
-                write
-              </Link>
-              .
-            </p>
-          </div>
+          <p className="mt-4 text-[15px] text-text-muted leading-relaxed">
+            I&apos;m trying to make AI go well.
+          </p>
         </div>
 
         <div className="aspect-[4/5] overflow-hidden">

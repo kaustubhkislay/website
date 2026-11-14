@@ -7,7 +7,7 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 
 | Route       | What it is                                                        |
 | ----------- | ----------------------------------------------------------------- |
-| `/`         | Bio, profile photo, contact links, and writing navigation.         |
+| `/`         | Bio, profile photo, and contact links.                             |
 | `/writing`  | Featured posts (hardcoded in `src/app/writing/page.tsx`).         |
 
 ## Environment variables
