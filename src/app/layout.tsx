@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BASE_URL } from "./sitemap";
-import { Webring } from "./webring";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -81,12 +80,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <div className="site-content">
-          {children}
-          {/* Pages end with pb-12 so the gap above the bar is a uniform 48px
-              on every route. See webring.tsx for the checker constraint. */}
-          <Webring />
-        </div>
+        <div className="site-content">{children}</div>
         <Analytics />
         <SpeedInsights />
       </body>

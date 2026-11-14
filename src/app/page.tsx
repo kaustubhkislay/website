@@ -8,7 +8,7 @@ const SHOW_AFFILIATIONS = false;
 
 export default function Home() {
   return (
-    <main className="home-page mx-auto w-full max-w-[640px] px-6 pb-12">
+    <main className="home-page mx-auto w-full max-w-[640px] px-6">
       <div className="grid grid-cols-[minmax(0,max-content)_96px] items-center justify-center gap-x-5 gap-y-6 sm:grid-cols-[minmax(0,max-content)_160px] sm:gap-x-8">
         <div className="min-w-0">
           <h1 className="text-[26px] sm:text-4xl font-bold tracking-tight leading-[1.1] text-text [overflow-wrap:anywhere]">

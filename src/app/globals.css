@@ -60,7 +60,7 @@ body {
   font-style: normal;
 }
 
-/* Center the homepage and its webring as one group; long pages keep normal flow. */
+/* Center the homepage; long pages keep normal flow. */
 .site-content:has(> .home-page) {
   display: flex;
   width: fit-content;
@@ -70,11 +70,6 @@ body {
   flex-direction: column;
   justify-content: center;
   padding-block: 3rem;
-}
-
-.site-content:has(> .home-page) > footer {
-  width: 100%;
-  padding-bottom: 0;
 }
 
 /* thin scrollbar */
