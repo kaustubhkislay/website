@@ -22,18 +22,23 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const path = `/writing/${article.slug}`;
   return {
     title: article.title,
-    description: `${article.title} by ${article.authors}.`,
+    description: "authors" in article ? `${article.title} by ${article.authors}.` : article.title,
     alternates: { canonical: path },
-    openGraph: { type: "article", title: article.title, url: path, publishedTime: article.published },
+    openGraph: {
+      type: "article", title: article.title, url: path,
+      publishedTime: article.published.length === 10 ? article.published : undefined,
+    },
   };
 }
 
-const dateFormat = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
+function formatDate(date: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: date.length === 10 ? "numeric" : undefined,
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
+}
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = await getArticle(params);
@@ -44,9 +49,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <article>
         <header className="mt-8 mb-9">
           <h1 className="text-3xl font-bold tracking-tight text-text leading-tight sm:text-4xl">{article.title}</h1>
-          <p className="mt-4 text-base text-text">{article.authors}</p>
+          {"authors" in article && <p className="mt-4 text-base text-text">{article.authors}</p>}
           <p className="mt-1 text-sm text-text-muted">
-            <time dateTime={article.published}>{dateFormat.format(new Date(article.published))}</time>
+            <time dateTime={article.published}>{formatDate(article.published)}</time>
             {"publication" in article && (
               <>
                 {" · "}

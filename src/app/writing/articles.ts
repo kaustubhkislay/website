@@ -4,8 +4,10 @@ import * as SecretLoyalties from "./_articles/secret-loyalties-and-remote-influe
 import * as Gametime from "./_articles/gametime";
 import * as OneOnOnes from "./_articles/how-to-approach-a-one-on-one";
 import * as MoralReasoning from "./_articles/reasoning-and-ethical-moral-task-results";
+import * as NonNegotiables from "./_articles/ai-safety-in-2026-and-beyond-non-negotiables";
 
 export const articles = [
+  NonNegotiables,
   Gametime,
   OneOnOnes,
   RewardHacking,
