@@ -11,12 +11,7 @@ export const metadata = {
 export default function WritingPage() {
   return (
     <main className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
-      <Link
-        href="/"
-        className="font-sans text-[11px] text-text hover:text-text-faint transition-colors"
-      >
-        &lt;back
-      </Link>
+      <Link href="/" className="text-sm text-accent no-underline">&lt;back</Link>
 
       <h1 className="mt-8 text-3xl sm:text-4xl font-bold tracking-tight leading-[1.05] text-text">
         Everything I write
