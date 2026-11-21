@@ -2,8 +2,6 @@ export const slug = "how-to-approach-a-one-on-one";
 export const title = "How to Approach a One-on-One (to Get a Job)";
 export const published = "2026-09-29";
 export const authors = "Kaustubh Kislay";
-export const publication = "Safety First";
-export const originalUrl = "https://kaustubhkislay.substack.com/p/how-to-approach-a-one-on-one-to-get";
 
 export default function OneOnOnes() {
   return (

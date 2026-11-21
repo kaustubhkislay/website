@@ -2,8 +2,6 @@ export const slug = "secret-loyalties-and-remote-influenceability";
 export const title = "Secret Loyalties Likely Raise Remote-Influenceability";
 export const published = "2026-06-08";
 export const authors = "Kaustubh Kislay";
-export const publication = "Safety First";
-export const originalUrl = "https://kaustubhkislay.substack.com/p/secret-loyalties-likely-raise-remote";
 
 export default function SecretLoyalties() {
   return (

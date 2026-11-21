@@ -4,8 +4,6 @@ export const slug = "reasoning-and-ethical-moral-task-results";
 export const title = "How does reasoning affect Ethical/Moral task results?";
 export const published = "2026-01-31";
 export const authors = "Kaustubh Kislay";
-export const publication = "Safety First";
-export const originalUrl = "https://kaustubhkislay.substack.com/p/how-does-reasoning-affect-ethicalmoral";
 
 export default function MoralReasoning() {
   return (

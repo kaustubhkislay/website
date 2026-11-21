@@ -4,8 +4,6 @@ export const slug = "gametime";
 export const title = "Gametime";
 export const published = "2026-11-12";
 export const authors = "Kaustubh Kislay";
-export const publication = "Safety First";
-export const originalUrl = "https://kaustubhkislay.substack.com/p/gametime";
 
 export default function Gametime() {
   return (

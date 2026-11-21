@@ -40,15 +40,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const Content = article.default;
   return (
     <main className="mx-auto max-w-[720px] px-6 pt-12 pb-20 sm:pt-16">
-      <Link href="/writing" className="text-xs text-accent underline underline-offset-2">All writing</Link>
+      <Link href="/writing" className="text-sm text-accent underline underline-offset-2">&lt;back</Link>
       <article>
         <header className="mt-8 mb-9">
           <h1 className="text-3xl font-bold tracking-tight text-text leading-tight sm:text-4xl">{article.title}</h1>
           <p className="mt-4 text-base text-text">{article.authors}</p>
           <p className="mt-1 text-sm text-text-muted">
             <time dateTime={article.published}>{dateFormat.format(new Date(article.published))}</time>
-            {" · "}
-            <a href={article.originalUrl} className="text-accent underline underline-offset-2">{article.publication}</a>
+            {"publication" in article && (
+              <>
+                {" · "}
+                <a href={article.originalUrl} className="text-accent underline underline-offset-2">{article.publication}</a>
+              </>
+            )}
           </p>
         </header>
         <div className="article-body"><Content /></div>

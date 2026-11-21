@@ -4,8 +4,6 @@ export const slug = "your-ais-dont-do-what-you-want";
 export const title = "Your AIs don't do what you want. This is really bad";
 export const published = "2026-07-22";
 export const authors = "Kaustubh Kislay";
-export const publication = "Safety First";
-export const originalUrl = "https://kaustubhkislay.substack.com/p/your-ais-dont-do-what-you-want-this";
 
 export default function RewardHacking() {
   return (
