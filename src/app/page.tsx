@@ -5,6 +5,7 @@ import { ContactBar } from "./contact-bar";
 
 // Temporarily hide affiliations; set to true to restore the section.
 const SHOW_AFFILIATIONS = false;
+const bioLinkClass = "text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover";
 
 export default function Home() {
   return (
@@ -20,13 +21,19 @@ export default function Home() {
             <p>I&apos;m trying to make AI go well.</p>
             <p>
               I{" "}
-              <Link
-                href="/writing"
-                className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
-              >
+              <Link href="/writing" className={bioLinkClass}>
                 write
               </Link>
               .
+            </p>
+            <p>
+              <a href="https://dconai.org/" className={bioLinkClass}>
+                dconai.org
+              </a>
+              {" and "}
+              <a href="https://aisaidsimply.com/" className={bioLinkClass}>
+                aisaidsimply.com
+              </a>
             </p>
           </div>
         </div>
