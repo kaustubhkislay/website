@@ -20,6 +20,11 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 Both pages use static content and need no database or external content API.
 The manual cache-refresh endpoint invalidates `/` and `/writing`.
 
+The build sets each date in `/sitemap.xml` from the last Git commit that changed
+the page's sources. The homepage tracks its page, contact bar, and portrait.
+The writing page tracks `src/app/writing/`. If a page starts using another
+content source, add its path in `scripts/sitemap-dates.mjs`.
+
 ## Development
 
 ```bash

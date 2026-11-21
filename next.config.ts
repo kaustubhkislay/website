@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
+import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD } from "next/constants";
+import { getSitemapDates } from "./scripts/sitemap-dates.mjs";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+export default function nextConfig(phase: string): NextConfig {
+  if (phase !== PHASE_DEVELOPMENT_SERVER && phase !== PHASE_PRODUCTION_BUILD) return {};
 
-export default nextConfig;
+  const { home, writing } = getSitemapDates();
+  return { env: { SITEMAP_HOME_LASTMOD: home, SITEMAP_WRITING_LASTMOD: writing } };
+}
