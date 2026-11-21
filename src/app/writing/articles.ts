@@ -13,3 +13,7 @@ export const articles = [
   MoralReasoning,
   HighBandwidthMemory,
 ];
+
+export const listedArticles = articles.filter(
+  (article) => article.slug !== OneOnOnes.slug && article.slug !== MoralReasoning.slug,
+);

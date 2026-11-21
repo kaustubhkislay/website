@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { articles } from "./articles";
+import { listedArticles } from "./articles";
 
 export const metadata = {
   title: "Writing",
@@ -39,7 +39,7 @@ export default function WritingPage() {
 
       <section className="mt-10">
         <ul className="space-y-5">
-          {articles.map((article) => (
+          {listedArticles.map((article) => (
             <li key={article.slug}>
               <Link
                 href={`/writing/${article.slug}`}
