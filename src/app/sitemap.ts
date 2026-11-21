@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 export const BASE_URL = "https://kaustubhais.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const dates: Record<string, string> = JSON.parse(process.env.SITEMAP_ARTICLE_DATES ?? "{}");
   return [
     {
       url: BASE_URL,
@@ -16,5 +17,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    ...Object.entries(dates).map(([slug, date]) => ({
+      url: `${BASE_URL}/writing/${slug}`,
+      lastModified: date || undefined,
+    })),
   ];
 }

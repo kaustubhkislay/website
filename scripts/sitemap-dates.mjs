@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { basename } from "node:path";
 
 export function getSitemapDates(cwd = process.cwd()) {
   function git(...args) {
@@ -18,8 +19,15 @@ export function getSitemapDates(cwd = process.cwd()) {
     return git("log", "-1", "--format=%cs", "HEAD", "--", ...paths);
   }
 
+  const sources = git("ls-files", "--cached", "--others", "--exclude-standard", "--", "src/app/writing/_articles/*.tsx");
+  const articles = Object.fromEntries(sources.split("\n").filter(Boolean).map((file) => {
+    const slug = basename(file, ".tsx");
+    return [slug, lastChange(file, `public/writing/${slug}`)];
+  }));
+
   return {
     home: lastChange("src/app/page.tsx", "src/app/contact-bar.tsx", "public/pfp_2.png"),
     writing: lastChange("src/app/writing"),
+    articles,
   };
 }

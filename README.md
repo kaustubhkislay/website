@@ -8,7 +8,8 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 | Route       | What it is                                                        |
 | ----------- | ----------------------------------------------------------------- |
 | `/`         | Bio, profile photo, and contact links.                             |
-| `/writing`  | Featured posts (hardcoded in `src/app/writing/page.tsx`).         |
+| `/writing`  | Article index.                                                   |
+| `/writing/[slug]` | Full articles with local images and video.                 |
 
 ## Environment variables
 
@@ -17,13 +18,15 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 | `GOOGLE_SITE_VERIFICATION`  | Optional Google Search Console verification meta tag.       |
 | `REVALIDATE_TOKEN`          | Authenticates `POST /api/revalidate` for a manual cache refresh. |
 
-Both pages use static content and need no database or external content API.
+All pages use static content and need no database or external content API.
 The manual cache-refresh endpoint invalidates `/` and `/writing`.
 
 The build sets each date in `/sitemap.xml` from the last Git commit that changed
 the page's sources. The homepage tracks its page, contact bar, and portrait.
-The writing page tracks `src/app/writing/`. If a page starts using another
-content source, add its path in `scripts/sitemap-dates.mjs`.
+The writing index tracks `src/app/writing/`. Each article tracks its own source
+in `src/app/writing/_articles/` and its media in `public/writing/<slug>/`.
+To add an article, use its slug as the source filename and register it in
+`src/app/writing/articles.ts`. The build generates its page and sitemap entry.
 
 ## Development
 

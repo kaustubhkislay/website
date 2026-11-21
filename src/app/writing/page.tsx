@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { articles } from "./articles";
 
 export const metadata = {
   title: "Writing",
@@ -7,32 +8,9 @@ export const metadata = {
   alternates: { canonical: "/writing" },
 };
 
-const FEATURED: { title: string; href: string }[] = [
-  {
-    title: "How to Approach a One-on-One (to Get a Job)",
-    href: "https://kaustubhkislay.substack.com/p/how-to-approach-a-one-on-one-to-get",
-  },
-  {
-    title: "Your AIs don't do what you want. This is really bad",
-    href: "https://kaustubhkislay.substack.com/p/your-ais-dont-do-what-you-want-this",
-  },
-  {
-    title: "Secret Loyalties Likely Raise Remote-Influenceability",
-    href: "https://kaustubhkislay.substack.com/p/secret-loyalties-likely-raise-remote",
-  },
-  {
-    title: "How does reasoning affect Ethical/Moral task results?",
-    href: "https://kaustubhkislay.substack.com/p/how-does-reasoning-affect-ethicalmoral",
-  },
-  {
-    title: "South Korea and the HBM Bottleneck",
-    href: "https://lambheart.substack.com/p/south-korea-and-the-hbm-bottleneck",
-  },
-];
-
 export default function WritingPage() {
   return (
-    <div className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
+    <main className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
       <Link
         href="/"
         className="font-sans text-[11px] uppercase tracking-[0.18em] text-text hover:text-text-faint transition-colors"
@@ -66,20 +44,18 @@ export default function WritingPage() {
 
       <section className="mt-10">
         <ul className="space-y-5">
-          {FEATURED.map((post) => (
-            <li key={post.href}>
-              <a
-                href={post.href}
-                target="_blank"
-                rel="noopener noreferrer"
+          {articles.map((article) => (
+            <li key={article.slug}>
+              <Link
+                href={`/writing/${article.slug}`}
                 className="text-[17px] font-medium text-text hover:text-accent-hover transition-colors"
               >
-                {post.title}
-              </a>
+                {article.title}
+              </Link>
             </li>
           ))}
         </ul>
       </section>
-    </div>
+    </main>
   );
 }
