@@ -16,15 +16,19 @@ export default function Home() {
           </h1>
           <ContactBar />
 
-          <p className="mt-4 text-[15px] text-text-muted leading-relaxed">
-            I&apos;m trying to make AI go well.
-          </p>
-          <Link
-            href="/writing"
-            className="mt-3 inline-flex min-h-11 items-center border border-accent px-4 text-[15px] text-accent transition-colors hover:bg-accent hover:text-bg"
-          >
-            I write
-          </Link>
+          <div className="mt-4 space-y-2 text-[15px] text-text-muted leading-relaxed">
+            <p>I&apos;m trying to make AI go well.</p>
+            <p>
+              I{" "}
+              <Link
+                href="/writing"
+                className="text-accent underline decoration-1 underline-offset-2 transition-colors hover:text-accent-hover"
+              >
+                write
+              </Link>
+              .
+            </p>
+          </div>
         </div>
 
         <div className="aspect-[4/5] overflow-hidden">
