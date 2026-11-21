@@ -44,4 +44,11 @@ test("each page keeps the date of its own content in full and shallow clones", (
   const shallow = join(temp, "shallow");
   execFileSync("git", ["clone", "--quiet", "--depth=1", pathToFileURL(repo).href, shallow]);
   assert.deepEqual(getSitemapDates(shallow), expected);
+
+  const vercel = join(temp, "vercel");
+  const fixtureUrl = pathToFileURL(repo).href;
+  execFileSync("git", ["clone", "--quiet", "--depth=1", fixtureUrl, vercel]);
+  execFileSync("git", ["remote", "remove", "origin"], { cwd: vercel });
+  execFileSync("git", ["config", `url.${fixtureUrl}.insteadOf`, "https://github.com/kaustubhkislay/website.git"], { cwd: vercel });
+  assert.deepEqual(getSitemapDates(vercel), expected);
 });

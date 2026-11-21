@@ -7,7 +7,11 @@ export function getSitemapDates(cwd = process.cwd()) {
 
   // Git treats a shallow boundary as if every file was added in that commit.
   if (git("rev-parse", "--is-shallow-repository") === "true") {
-    git("fetch", "--quiet", "--no-tags", "--unshallow", "origin", git("rev-parse", "HEAD"));
+    // Vercel removes the origin remote from its build checkout.
+    const remote = git("remote").split("\n").includes("origin")
+      ? "origin"
+      : "https://github.com/kaustubhkislay/website.git";
+    git("fetch", "--quiet", "--no-tags", "--unshallow", remote, git("rev-parse", "HEAD"));
   }
 
   function lastChange(...paths) {
