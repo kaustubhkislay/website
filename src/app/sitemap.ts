@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { articleHref, articles } from "./writing/articles";
 
 export const BASE_URL = "https://kaustubhais.com";
 
@@ -17,9 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    ...Object.entries(dates).map(([slug, date]) => ({
-      url: `${BASE_URL}/writing/${slug}`,
-      lastModified: date || undefined,
+    ...articles.map((article) => ({
+      url: `${BASE_URL}${articleHref(article)}`,
+      lastModified: dates[article.slug] || undefined,
     })),
   ];
 }

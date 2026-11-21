@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { listedArticles } from "./articles";
+import { articleHref, listedArticles } from "./articles";
 
 export const metadata = {
   title: "Writing",
@@ -39,16 +39,19 @@ export default function WritingPage() {
 
       <section className="mt-10">
         <ul className="space-y-5">
-          {listedArticles.map((article) => (
-            <li key={article.slug}>
-              <Link
-                href={`/writing/${article.slug}`}
-                className="text-[17px] font-medium text-text hover:text-accent-hover transition-colors"
-              >
-                {article.title}
-              </Link>
-            </li>
-          ))}
+          {listedArticles.map((article) => {
+            const ArticleLink = "pdfPath" in article ? "a" : Link;
+            return (
+              <li key={article.slug}>
+                <ArticleLink
+                  href={articleHref(article)}
+                  className="text-[17px] font-medium text-text hover:text-accent-hover transition-colors"
+                >
+                  {article.title}
+                </ArticleLink>
+              </li>
+            );
+          })}
         </ul>
       </section>
     </main>

@@ -19,3 +19,7 @@ export const articles = [
 export const listedArticles = articles.filter(
   (article) => article.slug !== OneOnOnes.slug && article.slug !== MoralReasoning.slug,
 );
+
+export function articleHref(article: (typeof articles)[number]) {
+  return "pdfPath" in article ? article.pdfPath : `/writing/${article.slug}`;
+}
