@@ -1,5 +1,9 @@
 export const slug = "ai-safety-in-2026-and-beyond-non-negotiables";
 export const title = "AI Safety in 2026 and Beyond: Non-Negotiables";
+export const authors = [
+  { name: "Kaustubh Kislay" },
+  { name: "Christine Corry", url: "https://christinecorry.com/index.html" },
+];
 export const published = "2026-11";
 
 const framework = "https://www.govops.ca.gov/wp-content/uploads/sites/11/2026/11/FINAL_-AI-Safety-in-2026-and-Beyond-v2.pdf";

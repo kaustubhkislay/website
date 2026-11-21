@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 import { articles } from "../articles";
 import "./article.css";
 
@@ -20,9 +21,12 @@ async function getArticle(params: ArticlePageProps["params"]) {
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await getArticle(params);
   const path = `/writing/${article.slug}`;
+  const authors = "authors" in article ? article.authors : undefined;
+  const names = Array.isArray(authors) ? authors.map(({ name }) => name).join(" and ") : authors;
   return {
     title: article.title,
-    description: "authors" in article ? `${article.title} by ${article.authors}.` : article.title,
+    description: names ? `${article.title} by ${names}.` : article.title,
+    ...(Array.isArray(authors) && { authors }),
     alternates: { canonical: path },
     openGraph: {
       type: "article", title: article.title, url: path,
@@ -49,7 +53,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <article>
         <header className="mt-8 mb-9">
           <h1 className="text-3xl font-bold tracking-tight text-text leading-tight sm:text-4xl">{article.title}</h1>
-          {"authors" in article && <p className="mt-4 text-base text-text">{article.authors}</p>}
+          {"authors" in article && (
+            <p className="mt-4 text-base text-text">
+              {typeof article.authors === "string" ? article.authors : article.authors.map(({ name, url }, index) => (
+                <Fragment key={name}>
+                  {index > 0 && " and "}
+                  {url ? <a href={url} className="text-accent underline underline-offset-2">{name}</a> : name}
+                </Fragment>
+              ))}
+            </p>
+          )}
           <p className="mt-1 text-sm text-text-muted">
             <time dateTime={article.published}>{formatDate(article.published)}</time>
             {"publication" in article && (
