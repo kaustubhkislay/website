@@ -28,11 +28,11 @@ export default function Home() {
             </p>
             <p>
               <a href="https://dconai.org/" className={bioLinkClass}>
-                dconai.org
+                DC on AI
               </a>
               {" and "}
               <a href="https://aisaidsimply.com/" className={bioLinkClass}>
-                aisaidsimply.com
+                AI Said Simply
               </a>
             </p>
           </div>
