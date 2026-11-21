@@ -8,6 +8,23 @@ export const metadata = {
   alternates: { canonical: "/writing" },
 };
 
+const publications = [
+  {
+    title: "BAITBENCH: Measuring Agent Reward Hacking with Optional Shortcuts Planted in ML Tasks",
+    href: "https://arxiv.org/abs/2608.30724",
+  },
+  {
+    title: "Quantifying Phonosemantic Iconicity Distributionally in 6 Languages",
+    href: "https://arxiv.org/abs/2510.14040",
+  },
+  {
+    title: "Evaluating K-Fold Cross Validation for Transformer Based Symbolic Regression Models",
+    href: "https://arxiv.org/abs/2410.21896",
+  },
+];
+
+const titleLinkClass = "text-[17px] font-medium text-text hover:text-accent-hover transition-colors";
+
 export default function WritingPage() {
   return (
     <main className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
@@ -17,26 +34,6 @@ export default function WritingPage() {
         Everything I write
       </h1>
 
-      <p className="mt-3 font-sans text-[11px] uppercase tracking-wide text-text-faint">
-        <a
-          href="https://substack.com/@kaustubhais"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-accent-hover transition-colors"
-        >
-          Substack
-        </a>
-        <span className="text-border-accent"> | </span>
-        <a
-          href="https://arxiv.org/search/cs?query=Kislay,+Kaustubh&searchtype=author&abstracts=show&order=-announced_date_first&size=50"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-accent-hover transition-colors"
-        >
-          arXiv
-        </a>
-      </p>
-
       <section className="mt-10">
         <ul className="space-y-5">
           {listedArticles.map((article) => {
@@ -45,13 +42,23 @@ export default function WritingPage() {
               <li key={article.slug}>
                 <ArticleLink
                   href={articleHref(article)}
-                  className="text-[17px] font-medium text-text hover:text-accent-hover transition-colors"
+                  className={titleLinkClass}
                 >
                   {article.title}
                 </ArticleLink>
               </li>
             );
           })}
+        </ul>
+      </section>
+      <section className="mt-12" aria-labelledby="publications">
+        <h2 id="publications" className="text-2xl font-bold tracking-tight text-text">Publications</h2>
+        <ul className="mt-5 space-y-5">
+          {publications.map(({ title, href }) => (
+            <li key={href}>
+              <a href={href} className={titleLinkClass} target="_blank" rel="noopener noreferrer">{title}</a>
+            </li>
+          ))}
         </ul>
       </section>
     </main>
