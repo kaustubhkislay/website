@@ -13,9 +13,9 @@ export default function WritingPage() {
     <main className="mx-auto max-w-[640px] px-6 pt-16 pb-12">
       <Link
         href="/"
-        className="font-sans text-[11px] uppercase tracking-[0.18em] text-text hover:text-text-faint transition-colors"
+        className="font-sans text-[11px] text-text hover:text-text-faint transition-colors"
       >
-        <span className="font-bold">{"<"}</span> Home
+        &lt;back
       </Link>
 
       <h1 className="mt-8 text-3xl sm:text-4xl font-bold tracking-tight leading-[1.05] text-text">
