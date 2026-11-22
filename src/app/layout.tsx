@@ -10,8 +10,7 @@ export const metadata: Metadata = {
     default: "Kaustubh Kislay",
     template: "%s — Kaustubh Kislay",
   },
-  description:
-    "AI safety researcher. Director of the Wisconsin AI Safety Initiative. Research and writing.",
+  description: "Research and writing.",
   authors: [{ name: "Kaustubh Kislay", url: BASE_URL }],
   creator: "Kaustubh Kislay",
   openGraph: {
@@ -63,12 +62,6 @@ export default function RootLayout({
               "@type": "Person",
               name: "Kaustubh Kislay",
               url: BASE_URL,
-              jobTitle: "AI Safety Researcher",
-              affiliation: {
-                "@type": "Organization",
-                name: "Wisconsin AI Safety Initiative",
-                url: "https://waisi.org/",
-              },
               sameAs: [
                 "https://github.com/kaustubhkislay",
                 "https://www.linkedin.com/in/kaustubh-kislay",

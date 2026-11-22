@@ -55,11 +55,6 @@ export default function Home() {
             <Section label="Affiliations, past and present">
               <ul className="space-y-2">
                 <Affiliation
-                  org="Wisconsin AI Safety Initiative"
-                  role="Director"
-                  href="https://waisi.org/"
-                />
-                <Affiliation
                   org="AI Said Simply"
                   role="Co-Founder"
                   href="https://aisaidsimply.com/"
