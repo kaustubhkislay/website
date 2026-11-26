@@ -50,6 +50,15 @@ export default function Home() {
           />
         </div>
 
+        <Image
+          src="/moon.png"
+          alt="The moon shines through a break in dark clouds."
+          width={512}
+          height={512}
+          sizes="(min-width: 640px) 224px, 176px"
+          className="col-span-2 h-auto w-44 max-w-full justify-self-center sm:w-56"
+        />
+
         {SHOW_AFFILIATIONS && (
           <div className="col-span-2">
             <Section label="Affiliations, past and present">

@@ -42,8 +42,9 @@ test("each page keeps the date of its own content in full and shallow clones", (
   commit("src/app/writing/_articles/first.tsx", "2026-01-07T12:00:00Z");
   commit("src/app/writing/_articles/second.tsx", "2026-01-08T12:00:00Z");
   commit("public/writing/first/figure.png", "2026-01-09T12:00:00Z");
+  commit("public/moon.png", "2026-01-10T12:00:00Z");
   const expected = {
-    home: "2026-01-04", writing: "2026-01-08",
+    home: "2026-01-10", writing: "2026-01-08",
     articles: { first: "2026-01-09", second: "2026-01-08" },
   };
   assert.deepEqual(getSitemapDates(repo), expected);
