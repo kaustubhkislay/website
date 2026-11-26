@@ -10,7 +10,7 @@ const bioLinkClass = "text-accent underline decoration-1 underline-offset-2 tran
 export default function Home() {
   return (
     <main className="home-page mx-auto w-full max-w-[640px] px-6">
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-[minmax(0,max-content)_96px] items-center justify-center gap-x-5 gap-y-6 sm:grid-cols-[minmax(0,max-content)_160px] sm:gap-x-8">
         <div className="min-w-0">
           <h1 className="text-[26px] sm:text-4xl font-bold tracking-tight leading-[1.1] text-text [overflow-wrap:anywhere]">
             Kaustubh Kislay
@@ -38,50 +38,55 @@ export default function Home() {
           </div>
         </div>
 
-        <Image
-          src="/moon.png"
-          alt="The moon shines through a break in dark clouds."
-          width={512}
-          height={512}
-          sizes="(min-width: 640px) 224px, 176px"
-          className="h-auto w-44 max-w-full justify-self-center sm:w-56"
-        />
+        <div className="aspect-[4/5] overflow-hidden">
+          <Image
+            src="/pfp_2.png"
+            alt="Kaustubh Kislay"
+            width={624}
+            height={520}
+            sizes="(min-width: 640px) 160px, 96px"
+            preload
+            className="h-full w-full object-cover"
+          />
+        </div>
 
         {SHOW_AFFILIATIONS && (
-          <Section label="Affiliations, past and present">
-            <ul className="space-y-2">
-              <Affiliation
-                org="AI Said Simply"
-                role="Co-Founder"
-                href="https://aisaidsimply.com/"
-              />
-              <Affiliation
-                org="SPAR"
-                role="Mentor, Researcher"
-                href="https://sparai.org/"
-              />
-              <Affiliation
-                org="Bluedot"
-                role="Contractor"
-                href="https://bluedot.org/"
-              />
-              <Affiliation
-                org="Kairos"
-                role="SWE Contractor"
-                href="https://kairos-project.org/"
-              />
-              <Affiliation
-                org="Pathfinder"
-                role="Mentor"
-                href="https://pathfinder.kairos-project.org/"
-              />
-              <Affiliation
-                org="UChicago XLab"
-                role="Writer, Researcher"
-                href="https://xrisk.uchicago.edu/"
-              />
-            </ul>
-          </Section>
+          <div className="col-span-2">
+            <Section label="Affiliations, past and present">
+              <ul className="space-y-2">
+                <Affiliation
+                  org="AI Said Simply"
+                  role="Co-Founder"
+                  href="https://aisaidsimply.com/"
+                />
+                <Affiliation
+                  org="SPAR"
+                  role="Mentor, Researcher"
+                  href="https://sparai.org/"
+                />
+                <Affiliation
+                  org="Bluedot"
+                  role="Contractor"
+                  href="https://bluedot.org/"
+                />
+                <Affiliation
+                  org="Kairos"
+                  role="SWE Contractor"
+                  href="https://kairos-project.org/"
+                />
+                <Affiliation
+                  org="Pathfinder"
+                  role="Mentor"
+                  href="https://pathfinder.kairos-project.org/"
+                />
+                <Affiliation
+                  org="UChicago XLab"
+                  role="Writer, Researcher"
+                  href="https://xrisk.uchicago.edu/"
+                />
+              </ul>
+            </Section>
+          </div>
         )}
       </div>
     </main>

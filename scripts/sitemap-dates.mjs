@@ -26,7 +26,7 @@ export function getSitemapDates(cwd = process.cwd()) {
   }));
 
   return {
-    home: lastChange("src/app/page.tsx", "src/app/contact-bar.tsx", "public/moon.png"),
+    home: lastChange("src/app/page.tsx", "src/app/contact-bar.tsx", "public/pfp_2.png"),
     writing: lastChange("src/app/writing"),
     articles,
   };
