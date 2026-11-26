@@ -7,7 +7,7 @@ Tailwind v4, deployed on Vercel at [kaustubhais.com](https://kaustubhais.com).
 
 | Route       | What it is                                                        |
 | ----------- | ----------------------------------------------------------------- |
-| `/`         | Bio, profile photo, contact links, and a moon photo.              |
+| `/`         | Bio, contact links, and a moon photo.                             |
 | `/writing`  | Article index.                                                   |
 | `/writing/[slug]` | Full articles with local images and video.                 |
 
@@ -22,7 +22,7 @@ All pages use static content and need no database or external content API.
 The manual cache-refresh endpoint invalidates `/` and `/writing`.
 
 The build sets each date in `/sitemap.xml` from the last Git commit that changed
-the page's sources. The homepage tracks its page, contact bar, portrait, and moon photo.
+the page's sources. The homepage tracks its page, contact bar, and moon photo.
 The writing index tracks `src/app/writing/`. Each article tracks its own source
 in `src/app/writing/_articles/` and its media in `public/writing/<slug>/`.
 To add an article, use its slug as the source filename and register it in

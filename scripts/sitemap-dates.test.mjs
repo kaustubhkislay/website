@@ -35,8 +35,6 @@ test("each page keeps the date of its own content in full and shallow clones", (
 
   commit("src/app/contact-bar.tsx", "2026-01-03T12:00:00Z");
   assert.deepEqual(getSitemapDates(repo), { home: "2026-01-03", writing: "2026-01-02", articles: {} });
-  commit("public/pfp_2.png", "2026-01-04T12:00:00Z");
-  assert.deepEqual(getSitemapDates(repo), { home: "2026-01-04", writing: "2026-01-02", articles: {} });
   commit("src/app/writing/page.tsx", "2026-01-05T12:00:00Z");
   commit("README.md", "2026-01-06T12:00:00Z");
   commit("src/app/writing/_articles/first.tsx", "2026-01-07T12:00:00Z");
